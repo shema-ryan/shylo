@@ -11,5 +11,12 @@ final lightTheme = ThemeData(
       
     )
   ),
+  outlinedButtonTheme: OutlinedButtonThemeData(
+    style: OutlinedButton.styleFrom(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5)
+      )
+    )
+  ),
   colorScheme: ColorScheme.fromSeed(seedColor: Color(0xff34dd00))
 );

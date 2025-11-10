@@ -8,7 +8,6 @@ void main() {
   runApp(
     ProviderScope(child: const MyApp()));
 }
-
  final scaffoldMessenger = GlobalKey<ScaffoldMessengerState>();
 
 class MyApp extends StatelessWidget {
@@ -20,11 +19,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       routeInformationParser: goRouter.routeInformationParser,
       routerDelegate: goRouter.routerDelegate,
-      scaffoldMessengerKey: scaffoldMessenger,
       routeInformationProvider: goRouter.routeInformationProvider,
       debugShowCheckedModeBanner: false,
-      title: 'Skylo',
-      theme: lightTheme,
+      title: 'Shylo',
+      scaffoldMessengerKey: scaffoldMessenger,
+      theme:lightTheme,
     );
   }
 }

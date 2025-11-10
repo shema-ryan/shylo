@@ -5,7 +5,7 @@ class DbController {
   Db? db;
   factory DbController() {
     if(database.db == null){
-      database.db = Db("mongodb://123localhost:27017/shyloDb");
+      database.db = Db("mongodb://localhost:27017/shyloDb");
       return database;
     }
     else {
