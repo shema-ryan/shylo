@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shylo/models/loan.dart';
 import 'package:shylo/models/usermodel.dart';
 import './screens/screen.dart';
 
@@ -19,6 +20,16 @@ final goRouter = GoRouter(
         return MaterialPage(
           key: state.pageKey,
           child: HomeScreen(userModel: userModel),
+        );
+      },
+    ),
+       GoRoute(
+      path: '/loandetailscreen',
+      pageBuilder: (context, state) {
+        final Loan loan = state.extra! as Loan;
+        return MaterialPage(
+          key: state.pageKey,
+          child: LoanDetailScreen(loan: loan ,),
         );
       },
     ),

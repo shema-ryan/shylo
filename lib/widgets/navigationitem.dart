@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "../screens/homescreen.dart";
 import "navigationview.dart";
 class NavigatorItem extends StatelessWidget {
   const NavigatorItem({

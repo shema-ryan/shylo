@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shylo/models/exception.dart';
 
 import '../models/client.dart';
@@ -14,6 +15,7 @@ class ClientController extends StateNotifier<List<Client>> {
           .collection('clientCollection')
           .find()
           .toList();
+      state = [];
       for (var item in results) {
         state = [...state, Client.fromJson(item)];
       }
@@ -42,8 +44,14 @@ class ClientController extends StateNotifier<List<Client>> {
         throw MyException(message: 'Client Already Exists');
       }
     } catch (e) {
+      
       rethrow;
     }
+  }
+
+  Future<String> getUserName(ObjectId id)async{
+    final results = await DbController.database.db!.collection('clientCollection').findOne({"_id": id});
+    return results!['name'];
   }
 }
 

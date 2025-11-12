@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shylo/controllers/navigatorcontroller.dart';
 import 'package:shylo/models/usermodel.dart';
 import 'package:shylo/screens/customerscreen.dart';
+import 'package:shylo/screens/loanscreen.dart';
 
 import '../widgets/navigationview.dart';
 
@@ -55,7 +55,7 @@ class HomeScreen extends ConsumerWidget {
 const screenList = [
   CustomerScreen(),
   DashBoardScreen(),
-  CustomerScreen(),
+  LoanScreen(),
   DashBoardScreen(),
   CustomerScreen(),
 

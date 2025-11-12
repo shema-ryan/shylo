@@ -1,5 +1,9 @@
 import 'package:mongo_dart/mongo_dart.dart';
-
+enum MartialStatus{
+  single , 
+  married , 
+  divorced,
+}
 class Client {
   final ObjectId? id;
   final String name;
@@ -14,6 +18,7 @@ class Client {
   final String kinRelation;
   final String nin ; 
   final String kinNin;
+
 
   const Client({
     required this.id,
