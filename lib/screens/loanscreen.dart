@@ -2,9 +2,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:shylo/controllers/clientcontroller.dart';
 import 'package:shylo/controllers/loancontroller.dart';
+import 'package:shylo/controllers/loansearchcontroller.dart';
 import 'package:shylo/models/moneyformat.dart';
 import 'package:shylo/widgets/loanform.dart';
 import 'package:shylo/widgets/tableheaderrow.dart';
@@ -102,59 +104,84 @@ class LoanItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final filteredLoans = ref.watch(filteredProvider(loans));
     return LayoutBuilder(
       builder: (context, constraints) {
-        return loans.isEmpty
-            ? const Center(child: AutoSizeText('No Loan Available'))
-            : SizedBox(
+        return SizedBox(
                 height: constraints.maxHeight,
                 width: constraints.maxWidth,
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: Table(
-                    border: TableBorder(
-                      horizontalInside: BorderSide(color: Colors.black12),
-                      bottom: BorderSide(color: Colors.black12),
-                    ),
+                  child: Column(
+                    spacing: 5,
                     children: [
-                      TableRow(
+                      Row(
                         children: [
-                         const  TableHeaderRow(value: 'Id'),
-                          TableHeaderRow(value: 'Amount'),
-                          TableHeaderRow(value: 'Full Payment'),
-                          TableHeaderRow(value: 'Purpose'),
-                          TableHeaderRow(value: 'Applied date'),
-                          TableHeaderRow(value: 'Due date'),
+                         const Spacer(), SizedBox(
+                            width: 500,
+                            child: TextField(
+                              onChanged: (value){
+                                ref.read(searchProvider.notifier).update((_)=>value);
+                              },
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                filled: true,
+                                fillColor: Theme.of(context).primaryColor.withAlpha(10),
+                                hintText: 'search with name .  .  .  .  .  .  .  .  .',
+                                prefixIcon: Icon(IconsaxPlusBroken.search_normal , size: 15,)
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                      for (Loan loan in loans)
-                        TableRow(
+                      Expanded(
+                        child: filteredLoans.isEmpty? const Center(child: Text('No Loan Available.'),): Table(
+                          border: TableBorder(
+                            horizontalInside: BorderSide(color: Colors.black12),
+                            bottom: BorderSide(color: Colors.black12),
+                          ),
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                GoRouter.of(
-                                  context,
-                                ).go('/loandetailscreen', extra: loan);
-                              },
-                              child: TablesRow(value: 'SHY-LN-${loan.loanId}'),
+                            TableRow(
+                              children: [
+                               const  TableHeaderRow(value: 'Id'),
+                                TableHeaderRow(value: 'Amount'),
+                                TableHeaderRow(value: 'Full Payment'),
+                                TableHeaderRow(value: 'Purpose'),
+                                TableHeaderRow(value: 'Applied date'),
+                                TableHeaderRow(value: 'Due date'),
+                              ],
                             ),
-                            TablesRow(
-                              value: '${loan.principleAmount} Ugx'.toMoney(),
-                            ),
-                            TablesRow(
-                              value:
-                                  '${ref.read(loanProvider.notifier).amountTopay(loan)} Ugx'
-                                      .toMoney(),
-                            ),
-                            TablesRow(value: loan.reason),
-                            TablesRow(
-                              value: DateFormat.yMd().format(loan.obtainDate),
-                            ),
-                            TablesRow(
-                              value: DateFormat.yMd().format(loan.dueDate),
-                            ),
+                            for (Loan loan in filteredLoans)
+                              TableRow(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      GoRouter.of(
+                                        context,
+                                      ).go('/loandetailscreen', extra: loan);
+                                    },
+                                    child: TablesRow(value: 'SHY-LN-${loan.loanId}'),
+                                  ),
+                                  TablesRow(
+                                    value: '${loan.principleAmount} Ugx'.toMoney(),
+                                  ),
+                                  TablesRow(
+                                    value:
+                                        '${ref.read(loanProvider.notifier).amountTopay(loan)} Ugx'
+                                            .toMoney(),
+                                  ),
+                                  TablesRow(value: loan.reason),
+                                  TablesRow(
+                                    value: DateFormat.yMd().format(loan.obtainDate),
+                                  ),
+                                  TablesRow(
+                                    value: DateFormat.yMd().format(loan.dueDate),
+                                  ),
+                                ],
+                              ),
                           ],
                         ),
+                      ),
                     ],
                   ),
                 ),

@@ -46,7 +46,7 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                   ),
                   title: Center(
                     child: Text(
-                      'Register Loan',
+                      'Loan Card',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
