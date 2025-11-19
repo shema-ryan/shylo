@@ -6,8 +6,8 @@ class TablesRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(2),
-      child: Center(child: Text(value)),
+      padding: const EdgeInsets.all(5),
+      child: Text(value),
     );
   }
 }

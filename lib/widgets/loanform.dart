@@ -9,6 +9,7 @@ import 'package:shylo/models/loan.dart';
 import '../controllers/clientcontroller.dart';
 import '../models/client.dart';
 import './clientform.dart';
+import 'formfield.dart';
 
 class LoanForm extends ConsumerStatefulWidget {
   const LoanForm({super.key});
@@ -24,6 +25,9 @@ class _LoanFormState extends ConsumerState<LoanForm> {
   double? principleAmount;
   Client? clientName;
   String? reason;
+  String? collateral;
+  String? remarks;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -49,7 +53,7 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                     ),
                   ),
                   content: SizedBox(
-                    height: size.height * 0.35,
+                    height: size.height * 0.5,
                     width: size.width * 0.5,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -65,8 +69,9 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                           children: [
                             Expanded(
                               child: FormField(
+                                initialValue: '',
                                 isNumber: true,
-                                data: IconsaxPlusLinear.money,
+                                data: IconsaxPlusLinear.wallet_add,
                                 fieldName: 'principal',
                                 onSaved: (value) {
                                   principleAmount = double.parse(value!);
@@ -82,16 +87,18 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                             ),
                             const SizedBox(width: 10),
                             Expanded(
+
                               child: FormField(
+                                initialValue: '',
                                 isNumber: true,
-                                data: IconsaxPlusLinear.percentage_square,
+                                data: IconsaxPlusLinear.bitcoin_card,
                                 onSaved: (value) {
                                   interestRate = double.parse(value!);
                                 },
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'required';
-                                  }  else {
+                                  } else {
                                     return null;
                                   }
                                 },
@@ -101,6 +108,7 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: FormField(
+                                initialValue: '',
                                 isNumber: false,
                                 data: IconsaxPlusLinear.message,
                                 onSaved: (value) {
@@ -161,7 +169,7 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                                   for (Client client in clientList)
                                     DropdownMenuItem(
                                       value: client,
-                                      child: Text(client.name),
+                                      child: Text(client.surName),
                                     ),
                                 ],
                                 onChanged: (value) {
@@ -208,10 +216,54 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                                       ? 'due date'
                                       : DateFormat.yMd().format(dueDate!),
                                   prefixIcon: Icon(
-                                    Icons.date_range,
+                                    size: 15,
+                                    IconsaxPlusLinear.calendar,
                                     color: Colors.black45,
                                   ),
                                 ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        Row(
+                          children: [
+                            Expanded(
+
+                              child: FormField(
+                                initialValue: '',
+                                isNumber: false,
+                                data: IconsaxPlusLinear.user_tick,
+                                fieldName: 'collateral',
+                                onSaved: (value) {
+                                  collateral = value!;
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'required';
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: FormField(
+                                initialValue: '',
+                                isNumber: false,
+                                data: IconsaxPlusLinear.note_text,
+                                onSaved: (value) {
+                                  remarks = value!;
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'required';
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                fieldName: 'remarks',
                               ),
                             ),
                           ],
@@ -233,10 +285,16 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                         if (_key.currentState!.validate()) {
                           _key.currentState!.save();
                           try {
-                           await ref
+                            final loanId = ref.read(loanProvider).isEmpty
+                                ? 0
+                                : ref.read(loanProvider).last.loanId;
+                            await ref
                                 .read(loanProvider.notifier)
                                 .registerLoan(
                                   Loan(
+                                    remarks: remarks!,
+                                    collateral: collateral!,
+                                    loanId: loanId + 1,
                                     reason: reason!,
                                     client: clientName!.id!,
                                     id: null,
@@ -246,12 +304,14 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                                     obtainDate: DateTime.now(),
                                     principleAmount: principleAmount!,
                                     paymentTrack: {
-                                      DateTime.now().toIso8601String() : 0,
+                                      DateTime.now().toIso8601String(): 0,
                                     },
                                   ),
                                 );
+                            dueDate = null;
+                            if (context.mounted) Navigator.of(context).pop();
                           } catch (e) {
-                          if(context.mounted)  Navigator.of(context).pop();
+                            if (context.mounted) Navigator.of(context).pop();
                             showErrorMessage(message: e.toString());
                           }
                         }

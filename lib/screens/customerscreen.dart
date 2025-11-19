@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shylo/controllers/clientcontroller.dart';
 import 'package:shylo/models/client.dart';
+import 'package:shylo/routes.dart';
 import 'package:shylo/widgets/success.dart';
 import '../widgets/clientform.dart';
 import '../widgets/tableheaderrow.dart';
@@ -14,13 +14,12 @@ class CustomerScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<CustomerScreen> createState() => _CustomerScreenState();
 }
-  
 
 class _CustomerScreenState extends ConsumerState<CustomerScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero , ()async{
+    Future.delayed(Duration.zero, () async {
       try {
         await ref.read(clientProvider.notifier).fetchAllClient();
       } catch (e) {
@@ -28,6 +27,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
       }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final clientList = ref.watch(clientProvider);
@@ -39,7 +39,6 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
             SizedBox(height: constraints.maxHeight * 0.005),
             Row(children: [const Spacer(), ClientForm()]),
             SizedBox(
-    
               height: constraints.maxHeight * 0.915,
               child: clientList.isEmpty
                   ? const Center(child: Text('No Client Received Today.'))
@@ -56,6 +55,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                       children: [
                         TableRow(
                           children: [
+                            TableHeaderRow(value: 'Customer ID'),
                             TableHeaderRow(value: 'CustomerName'),
                             TableHeaderRow(value: 'Email'),
                             TableHeaderRow(value: 'Address'),
@@ -65,9 +65,13 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                         for (Client client in clientList)
                           TableRow(
                             children: [
-                              TablesRow(value: client.name),
+                              GestureDetector(
+                                onTap: ()=> goRouter.go('/clientdetailscreen', extra: client),
+                                child: TablesRow(value: 'SHYL/${client.uniqueId}')),
+
+                              TablesRow(value: '${client.surName} ${client.lastName}'),
                               TablesRow(value: client.email),
-                              TablesRow(value: client.phoneNumber.toString()),
+                              TablesRow(value: '0${client.phoneNumber.ceil()}'),
                               TablesRow(value: client.kinName),
                             ],
                           ),
@@ -80,8 +84,3 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
     );
   }
 }
-
-
-
-
-

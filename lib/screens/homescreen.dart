@@ -10,11 +10,12 @@ import '../widgets/navigationview.dart';
 
 
 class HomeScreen extends ConsumerWidget {
+  final int? previous ;
   final UserModel userModel;
-  const HomeScreen({super.key ,required this.userModel});
+  const HomeScreen({super.key ,required this.userModel , required this.previous});
   @override
   Widget build(BuildContext context , WidgetRef ref) {
-    int selectedIndex = ref.watch(navigatorProvider);
+    int selectedIndex =  previous??ref.watch(navigatorProvider);
     final decodedImage = base64Decode(userModel.imagePath);
     return Scaffold(
       backgroundColor: Colors.white,
@@ -53,8 +54,8 @@ class HomeScreen extends ConsumerWidget {
 
 
 const screenList = [
-  CustomerScreen(),
   DashBoardScreen(),
+  CustomerScreen(),
   LoanScreen(),
   DashBoardScreen(),
   CustomerScreen(),

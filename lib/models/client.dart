@@ -1,28 +1,37 @@
 import 'package:mongo_dart/mongo_dart.dart';
-enum MartialStatus{
-  single , 
-  married , 
-  divorced,
-}
+
+enum MartialStatus { single, married, divorced }
+
 class Client {
+  final int uniqueId;
   final ObjectId? id;
-  final String name;
+  final String surName;
+  final String lastName;
   final String email;
   final double phoneNumber;
   final bool gender;
+  final MartialStatus status;
   final String currentLocation;
   final double privatePhoneNumber;
   final String kinName;
   final double kinNumber;
   final String kinLocation;
   final String kinRelation;
-  final String nin ; 
+  final String nin;
   final String kinNin;
-
+  final String guaranterName;
+  final String guaranterNin;
+  final double guaranterPhoneNumber;
 
   const Client({
+    required this.guaranterPhoneNumber,
+    required this.guaranterNin,
+    required this.guaranterName,
+    required this.uniqueId,
+    required this.status,
     required this.id,
-    required this.name,
+    required this.lastName,
+    required this.surName,
     required this.phoneNumber,
     required this.currentLocation,
     required this.email,
@@ -38,7 +47,15 @@ class Client {
 
   Client.fromJson(Map<String, dynamic> clientJson)
     : id = clientJson['_id'],
-      name = clientJson['name'],
+      guaranterNin = clientJson['guaranterNin'],
+      guaranterPhoneNumber = clientJson['guaranterPhoneNumber'],
+      guaranterName = clientJson['guaranterName'],
+      uniqueId = clientJson['uniqueId'],
+      surName = clientJson['surName'],
+      lastName = clientJson['lastName'],
+      status = MartialStatus.values.firstWhere(
+        (test) => test.name == clientJson['status'],
+      ),
       nin = clientJson['nin'],
       kinNin = clientJson['kinNin'],
       currentLocation = clientJson['currentLocation'],
@@ -53,7 +70,13 @@ class Client {
 
   Map<String, dynamic> clientToJson() => {
     if (id != null) '_id': id,
-    'name': name,
+    'guaranterName': guaranterName,
+    'guaranterPhoneNumber': guaranterPhoneNumber,
+    'guaranterNin': guaranterNin,
+    'surName': surName,
+    'lastName': lastName,
+    'status': status.name,
+    'uniqueId': uniqueId,
     'currentLocation': currentLocation,
     'email': email,
     'gender': gender,
@@ -63,7 +86,7 @@ class Client {
     'kinRelation': kinRelation,
     'phoneNumber': phoneNumber,
     'privatePhoneNumber': privatePhoneNumber,
-    'nin':nin , 
+    'nin': nin,
     'kinNin': kinNin,
   };
 }

@@ -29,7 +29,7 @@ class ClientController extends StateNotifier<List<Client>> {
     try {
       final results = await DbController.database.db!
           .collection('clientCollection')
-          .findOne({'name': client.name});
+          .findOne({'uniqueId': client.id});
       if (results == null) {
         // add client to DB
         await DbController.database.db!
@@ -38,20 +38,49 @@ class ClientController extends StateNotifier<List<Client>> {
         // add Client to state
         final resultsB = await DbController.database.db!
             .collection('clientCollection')
-            .findOne({'name': client.name});
+            .findOne({'uniqueId': client.uniqueId});
         state = [...state, Client.fromJson(resultsB!)];
       } else {
         throw MyException(message: 'Client Already Exists');
       }
     } catch (e) {
-      
       rethrow;
     }
   }
 
-  Future<String> getUserName(ObjectId id)async{
-    final results = await DbController.database.db!.collection('clientCollection').findOne({"_id": id});
-    return results!['name'];
+  // <--- updating client data Data --->
+  Future<void> updateClient({required Client client}) async {
+    try {
+      await DbController.database.db!
+          .collection('clientCollection')
+          .update(
+            where.eq('_id', client.id),
+            modify
+                .set('status', client.status.name)
+                .set('email', client.email)
+                .set('currentLocation', client.currentLocation)
+                .set('phoneNumber', client.phoneNumber)
+                .set('kinName', client.kinName)
+                .set('kinNumber', client.kinNumber)
+                .set('kinNin', client.kinNin)
+                .set('privatePhoneNumber', client.privatePhoneNumber)
+                .set('kinRelation', client.kinRelation)
+                .set('kinLocation', client.kinLocation),
+          );
+      final index = state.indexWhere((element) => element.id == client.id);
+      state.removeAt(index);
+      state.insert(index, client);
+      state = [...state];
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<String> getUserName(ObjectId id) async {
+    final results = await DbController.database.db!
+        .collection('clientCollection')
+        .findOne({"_id": id});
+    return results!['surName'];
   }
 }
 

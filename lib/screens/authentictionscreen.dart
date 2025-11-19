@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:shylo/controllers/databasecontroller.dart';
+import 'package:shylo/controllers/localnotification.dart';
 import 'package:shylo/controllers/userauthenticationcontroller.dart';
 import 'package:shylo/widgets/success.dart';
 
@@ -27,6 +28,7 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
       DbController.database.db!
           .open()
           .then((_) {
+              WindowsNotification.showNotification(body: 'Shylo' ,title: '  Welcome to shylo enterprise..');
              showSuccessMessage(message: 'Db Connected successfully...');
           })
           .onError((error, _) {
@@ -37,13 +39,12 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
           });
     }
   }
-
   String? userName;
   String? passWord;
-
   bool isHidden = true;
   @override
   Widget build(BuildContext context) {
+    print('${Theme.of(context).primaryColor}');
     return Form(
       key: _formkey,
       child: Scaffold(
@@ -160,7 +161,10 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
                               if (context.mounted) {
                                 GoRouter.of(context).go(
                                   '/homescreen',
-                                  extra: ref.read(userAuthenticationProvider),
+                                  extra:{
+                                    'userModel': ref.read(userAuthenticationProvider),
+                                    'selectedIndex': null ,
+                                  },
                                 );
                               }
                             } catch (e) {
@@ -182,7 +186,7 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
                             // }
                           }
                         },
-                        child: const AutoSizeText('Login'),
+                        child: const Text('Login'),
                       ),
                     ),
                     SizedBox(height: appHeight * 0.01),

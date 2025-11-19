@@ -44,7 +44,7 @@ class UserAuthenticationController extends StateNotifier<UserModel?> {
       );
       // create userModel
       final userModel = UserModel(
-        userName: userName,
+        userName: userName.toLowerCase(),
         passWord: hashedPassWord,
         ninNumber: 'something great is about to happen',
         roles: [UserRoles.administrator, UserRoles.loanofficer],

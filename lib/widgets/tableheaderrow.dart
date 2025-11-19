@@ -8,7 +8,7 @@ class TableHeaderRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(5),
       color: Theme.of(context).primaryColor.withAlpha(50),
-      child: Center(child: Text(value)),
+      child: Text(value),
     );
   }
 }
