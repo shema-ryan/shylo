@@ -3,7 +3,7 @@ import 'package:flutter/material.dart' hide FormField;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:shylo/controllers/clientcontroller.dart';
-import 'package:shylo/controllers/loancontroller.dart';
+
 import 'formfield.dart';
 import '../models/client.dart';
 import 'success.dart';
@@ -76,7 +76,7 @@ class _ClientEditFormState extends ConsumerState<ClientEditForm> {
                         children: [
                           Expanded(
                             child: FormField(
-                              initialValue: '0${widget.client.phoneNumber}',
+                              initialValue: '0${widget.client.phoneNumber.ceil()}',
                               isNumber: true,
                               data: IconsaxPlusLinear.call,
                               onSaved: (value) {
@@ -194,7 +194,7 @@ class _ClientEditFormState extends ConsumerState<ClientEditForm> {
                           Expanded(
                             child: FormField(
                               initialValue:
-                                  '0${widget.client.privatePhoneNumber}',
+                                  '0${widget.client.privatePhoneNumber.ceil()}',
                               isNumber: true,
                               data: IconsaxPlusLinear.call_received,
                               fieldName: 'private phone',
@@ -241,7 +241,7 @@ class _ClientEditFormState extends ConsumerState<ClientEditForm> {
                           const SizedBox(width: 10),
                           Expanded(
                             child: FormField(
-                              initialValue: '0${widget.client.kinNumber}',
+                              initialValue: '0${widget.client.kinNumber.ceil()}',
                               isNumber: true,
                               data: IconsaxPlusLinear.call,
                               onSaved: (value) {

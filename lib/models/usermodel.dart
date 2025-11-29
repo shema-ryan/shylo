@@ -7,14 +7,14 @@ class UserModel {
   final String userName;
   final String passWord;
   final String ninNumber;
-  final String imagePath;
+
   final List<UserRoles> roles;
   const UserModel({
     this.userId,
     required this.userName,
     required this.passWord,
     required this.roles,
-    required this.imagePath,
+
     required this.ninNumber,
   });
 
@@ -29,8 +29,7 @@ class UserModel {
         ...(userJson['roles'] as List<dynamic>).map(
           (element) => UserRoles.values.singleWhere((value) => value.name == element.toString()),
         ),
-      ],
-      imagePath = userJson['imagePath'];
+      ];
 
   // userModel to json
   Map<String, dynamic> userModelToJson() => {
@@ -38,6 +37,6 @@ class UserModel {
     'passWord': passWord,
     'ninNumber': ninNumber,
     'roles': [...roles.map((userRole) => userRole.name)],
-    'imagePath': imagePath,
+    
   };
 }

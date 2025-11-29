@@ -19,6 +19,7 @@ class ClientController extends StateNotifier<List<Client>> {
       for (var item in results) {
         state = [...state, Client.fromJson(item)];
       }
+
     } catch (e) {
       rethrow;
     }
@@ -43,6 +44,18 @@ class ClientController extends StateNotifier<List<Client>> {
       } else {
         throw MyException(message: 'Client Already Exists');
       }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteClient({required ObjectId id}) async {
+    try {
+      await DbController.database.db!
+          .collection('clientCollection')
+          .remove(where.eq('_id', id));
+      state.removeWhere((client) => client.id == id);
+      state = [...state];
     } catch (e) {
       rethrow;
     }
@@ -87,3 +100,20 @@ class ClientController extends StateNotifier<List<Client>> {
 final clientProvider = StateNotifierProvider<ClientController, List<Client>>(
   (ref) => ClientController(),
 );
+
+// section for searching a certain client
+final searchText = StateProvider<String>((ref) =>'');
+// the 
+final filteredClientProvider = StateProvider<List<Client>>((ref) {
+  final searchString = ref.watch(searchText);
+  final allClient = ref.watch(clientProvider);
+  if (searchString.isEmpty) {
+    return allClient;
+  } else {
+    return [
+      ...allClient.where(
+        (element) => element.uniqueId == int.parse(searchString),
+      ),
+    ];
+  }
+});

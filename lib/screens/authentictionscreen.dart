@@ -9,17 +9,15 @@ import 'package:shylo/controllers/localnotification.dart';
 import 'package:shylo/controllers/userauthenticationcontroller.dart';
 import 'package:shylo/widgets/success.dart';
 
-//
 class AuthenticationScreen extends ConsumerStatefulWidget {
   const AuthenticationScreen({super.key});
-
   @override
   ConsumerState<AuthenticationScreen> createState() =>
       _AuthenticationScreenState();
 }
-
 class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
   final _formkey = GlobalKey<FormState>();
+  late bool isLoading ;
   @override
   void initState() {
     super.initState();
@@ -28,23 +26,26 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
       DbController.database.db!
           .open()
           .then((_) {
-              WindowsNotification.showNotification(body: 'Shylo' ,title: '  Welcome to shylo enterprise..');
-             showSuccessMessage(message: 'Db Connected successfully...');
+            WindowsNotification.showNotification(
+              body: 'Shylo',
+              title: '  Welcome to shylo enterprise..',
+            );
+            showSuccessMessage(message: 'Db Connected successfully...');
           })
           .onError((error, _) {
-             showErrorMessage(message: error.toString());
+            showErrorMessage(message: error.toString());
             Future.delayed(const Duration(seconds: 10), () {
               exit(-1);
             });
           });
     }
+    isLoading = false ;
   }
   String? userName;
   String? passWord;
   bool isHidden = true;
   @override
   Widget build(BuildContext context) {
-    print('${Theme.of(context).primaryColor}');
     return Form(
       key: _formkey,
       child: Scaffold(
@@ -150,10 +151,16 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
                       height: appHeight * 0.06,
                       width: double.infinity,
                       child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xff34dd00),
+                        ),
                         onPressed: () async {
                           if (_formkey.currentState!.validate()) {
                             _formkey.currentState!.save(); //
-                            try {
+                             try {
+                             setState(() {
+                                isLoading = true;
+                              });
                               await ref
                                   .read(userAuthenticationProvider.notifier)
                                   .login(name: userName!, passWord: passWord!);
@@ -167,9 +174,13 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
                                   },
                                 );
                               }
+                              isLoading = false;
                             } catch (e) {
+                                setState(() {
+                                isLoading = false ;
+                              });
                               showErrorMessage(message: e.toString());
-                            }                   
+                            }
                             // try {
                             //   await ref
                             //       .read(userAuthenticationProvider.notifier)
@@ -181,12 +192,23 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
                             //     message: 'USER REGISTERED SUCCESFFULY',
                             //   );
                             //   _formkey.currentState!.reset();
+                            
                             // } catch (e) {
+                            //   setState(() {
+                            //     isLoading = false ;
+                            //   });
                             //   showErrorMessage(message: e.toString());
                             // }
                           }
                         },
-                        child: const Text('Login'),
+                        child:  isLoading ? CircularProgressIndicator(
+                          color: Colors.white70,
+                          
+                          strokeWidth: 2,
+                          padding: const EdgeInsets.all(3),
+                           
+
+                        ): const Text('Login'),
                       ),
                     ),
                     SizedBox(height: appHeight * 0.01),
@@ -204,3 +226,9 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
     );
   }
 }
+// let's do loading state .
+
+
+
+
+

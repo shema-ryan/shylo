@@ -37,8 +37,47 @@ class Loancontroller extends StateNotifier<List<Loan>> {
     }
   }
 
+  // update loan date
+  Future<void> updateLoanDate({
+    required ObjectId id,
+    required DateTime dueDate,
+  }) async {
+    try {
+      await DbController.database.db!
+          .collection('loanCollection')
+          .update(
+            where.eq('_id', id),
+            modify.set('dueDate', dueDate.toIso8601String()),
+          );
+      final index = state.indexWhere((element) => element.id == id);
+      final loan = state[index];
+      state.removeAt(index);
+      state.insert(
+        index,
+        Loan(
+          remarks: loan.remarks,
+          loanId: loan.loanId,
+          reason: loan.reason,
+          client: loan.client,
+          id: id,
+          dueDate: dueDate,
+          interestRate: loan.interestRate,
+          loanStatus: loan.loanStatus,
+          obtainDate: loan.obtainDate,
+          principleAmount: loan.principleAmount,
+          paymentTrack: loan.paymentTrack,
+          collateral: loan.collateral,
+        ),
+      );
+
+      state = [...state];
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> updatePayment(Loan loan) async {
-    final newStatus =calculateBalance(loan: loan) == 0
+    final newStatus = calculateBalance(loan: loan) == 0
         ? LoanStatus.complete
         : LoanStatus.partial;
     try {
@@ -71,7 +110,7 @@ class Loancontroller extends StateNotifier<List<Loan>> {
         ),
       );
       // Update the state.
-       state = [...state];
+      state = [...state];
     } catch (e) {
       rethrow;
     }

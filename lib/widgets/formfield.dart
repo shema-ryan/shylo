@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class FormField extends StatelessWidget {
-  final String initialValue ;
+  final String initialValue;
   final bool isNumber;
   final IconData data;
   final Function(String? value) onSaved;
@@ -21,6 +21,7 @@ class FormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       initialValue: initialValue,
+
       keyboardType: isNumber ? TextInputType.number : null,
       inputFormatters: isNumber
           ? [FilteringTextInputFormatter.digitsOnly]
@@ -44,19 +45,8 @@ class FormField extends StatelessWidget {
         ),
         fillColor: Colors.greenAccent.withAlpha(10),
         label: Text(fieldName),
-        prefixIcon: Icon(data, color: Colors.black45 , size: 20,),
+        prefixIcon: Icon(data, color: Colors.black45, size: 20),
       ),
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-

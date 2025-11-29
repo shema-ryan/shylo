@@ -1,13 +1,12 @@
-import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shylo/controllers/navigatorcontroller.dart';
 import 'package:shylo/models/usermodel.dart';
 import 'package:shylo/screens/customerscreen.dart';
+import 'package:shylo/screens/investorscreen.dart';
 import 'package:shylo/screens/loanscreen.dart';
-
 import '../widgets/navigationview.dart';
-
 
 class HomeScreen extends ConsumerWidget {
   final int? previous ;
@@ -16,7 +15,6 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context , WidgetRef ref) {
     int selectedIndex =  previous??ref.watch(navigatorProvider);
-    final decodedImage = base64Decode(userModel.imagePath);
     return Scaffold(
       backgroundColor: Colors.white,
       body: LayoutBuilder(
@@ -57,7 +55,7 @@ const screenList = [
   DashBoardScreen(),
   CustomerScreen(),
   LoanScreen(),
-  DashBoardScreen(),
+  InvestorScreen(),
   CustomerScreen(),
 
 ];

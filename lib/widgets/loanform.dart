@@ -8,7 +8,6 @@ import '../controllers/loancontroller.dart';
 import 'package:shylo/models/loan.dart';
 import '../controllers/clientcontroller.dart';
 import '../models/client.dart';
-import './clientform.dart';
 import 'formfield.dart';
 
 class LoanForm extends ConsumerStatefulWidget {
@@ -32,7 +31,8 @@ class _LoanFormState extends ConsumerState<LoanForm> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final clientList = ref.read(clientProvider);
-    return ElevatedButton(
+    return ElevatedButton.icon(
+      icon: const Icon(Icons.add),
       onPressed: () {
         showDialog(
           context: context,
@@ -137,6 +137,7 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                           children: [
                             Expanded(
                               child: DropdownButtonFormField<Client>(
+                             
                                 borderRadius: BorderRadius.circular(5),
                                 validator: (value) {
                                   if (value == null) {
@@ -147,6 +148,7 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                                 },
                                 onSaved: (value) {},
                                 decoration: InputDecoration(
+                                  
                                   hintText: 'select client',
                                   focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
@@ -325,7 +327,7 @@ class _LoanFormState extends ConsumerState<LoanForm> {
           ),
         );
       },
-      child: const Text('Apply For Loan'),
+      label: const Text('Add Loan'),
     );
   }
 }

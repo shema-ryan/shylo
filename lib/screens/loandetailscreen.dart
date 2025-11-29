@@ -8,7 +8,6 @@ import 'package:mongo_dart/mongo_dart.dart' hide Center;
 import 'package:shylo/controllers/clientcontroller.dart';
 import 'package:shylo/controllers/loancontroller.dart';
 import 'package:shylo/controllers/userauthenticationcontroller.dart';
-import 'package:shylo/models/exception.dart';
 import 'package:shylo/models/moneyformat.dart';
 import 'package:shylo/widgets/success.dart';
 import 'package:shylo/widgets/tableheaderrow.dart';
@@ -23,17 +22,22 @@ class LoanDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final allLoans = ref.watch(loanProvider);
     final loan = allLoans.firstWhere((element) => element.id == id);
-    final client = ref
-        .read(clientProvider)
-        .firstWhere((element) => element.id == loan.client);
+
+    final allClient = ref
+        .watch(clientProvider);
+
+        final client = allClient.firstWhere((element) {
+          print('element id ${element.id} isnt equal ${loan.client}'); 
+          return element.id== loan.client;
+        });
     var clienPaymentDates = loan.paymentTrack.keys;
     var clientPaymentAmount = loan.paymentTrack.values;
 
     return Scaffold(
       floatingActionButton: FloatingActionButton.small(
         child: const Icon(Icons.add),
-        onPressed: ()async {
-        await showDialog(
+        onPressed: () async {
+          await showDialog(
             context: context,
             builder: (context) => AlertDialog(
               shape: RoundedRectangleBorder(
@@ -73,7 +77,9 @@ class LoanDetailScreen extends ConsumerWidget {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor.withAlpha(100)
+                    backgroundColor: Theme.of(
+                      context,
+                    ).primaryColor.withAlpha(100),
                   ),
                   onPressed: () async {
                     if (amountController.value.text.isNotEmpty) {
@@ -198,6 +204,34 @@ class LoanDetailScreen extends ConsumerWidget {
                       data: IconsaxPlusBold.calendar,
                       labelText: 'Due-Date ',
                       value: DateFormat.yMd().format(loan.dueDate),
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        try {
+                          final pickedDate = await showDatePicker(
+                            context: context,
+                            firstDate: loan.dueDate,
+                            lastDate: DateTime.now().add(
+                              const Duration(days: 366),
+                            ),
+                          );
+                          if (pickedDate == null) {
+                          } else {
+                            await ref
+                                .read(loanProvider.notifier)
+                                .updateLoanDate(id: id, dueDate: pickedDate);
+                            showSuccessMessage(
+                              message: 'Due Date updated Sucessfully.',
+                            );
+                          }
+                        } catch (e) {
+                          showErrorMessage(message: e.toString());
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.edit,
+                        color: Colors.grey,
+                      ),
                     ),
                   ],
                 ),

@@ -42,7 +42,7 @@ class NavigatorItem extends StatelessWidget {
           SizedBox(width: width * 0.005),
           Icon(navigationItem.data, size: 15),
           SizedBox(width: width * 0.005),
-          Text(navigationItem.name),
+          Text(navigationItem.name , style: TextStyle(fontSize:13)),
         ],
       ),
     );

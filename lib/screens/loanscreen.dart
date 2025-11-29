@@ -1,4 +1,4 @@
-import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -124,11 +124,14 @@ class LoanItem extends ConsumerWidget {
                                 ref.read(searchProvider.notifier).update((_)=>value);
                               },
                               decoration: InputDecoration(
+
                                 border: InputBorder.none,
                                 filled: true,
+                                
                                 fillColor: Theme.of(context).primaryColor.withAlpha(10),
-                                hintText: 'search with name .  .  .  .  .  .  .  .  .',
-                                prefixIcon: Icon(IconsaxPlusBroken.search_normal , size: 15,)
+                                labelText: 'search with name .  .  .  .  .  .  ',
+                                 
+                                suffix: Icon(IconsaxPlusBroken.search_normal , size: 15,)
                               ),
                             ),
                           ),

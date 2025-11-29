@@ -6,6 +6,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shylo/controllers/clientcontroller.dart';
 import 'package:shylo/widgets/clienteditform.dart';
 
+
 import '../controllers/userauthenticationcontroller.dart';
 import 'loandetailscreen.dart';
 
@@ -15,7 +16,10 @@ class ClientDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedClient = ref.watch(clientProvider).firstWhere((element)=> element.id ==id);
+
+    final selectedClient = ref
+        .watch(clientProvider)
+        .firstWhere((element) => element.id == id);
     return Scaffold(
       floatingActionButton: FloatingActionButton.small(
         onPressed: () {
@@ -48,7 +52,6 @@ class ClientDetailScreen extends ConsumerWidget {
       body: LayoutBuilder(
         builder: (context, constraints) {
           final height = constraints.maxHeight;
-          final width = constraints.maxWidth;
           return Padding(
             padding: const EdgeInsets.all(5),
             child: Column(
