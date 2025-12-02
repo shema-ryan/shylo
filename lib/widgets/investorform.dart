@@ -57,7 +57,7 @@ class _InvestorFormState extends ConsumerState<InvestorForm> {
                         name: name!,
                         amount: amount!,
                         date: DateTime.now(),
-                        paymentTracker: {DateTime.now() : false}
+                        paymentTracker: {DateTime.now().toIso8601String() : 0}
                       ),
                     );
                 if (context.mounted) Navigator.of(context).pop();

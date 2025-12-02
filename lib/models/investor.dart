@@ -1,4 +1,5 @@
 import 'package:mongo_dart/mongo_dart.dart';
+
 class Investor {
   final ObjectId? id;
   final double telephoneNumber;
@@ -8,7 +9,7 @@ class Investor {
   final String email;
   final DateTime date;
   final double interestRate;
-  final Map<DateTime , bool> paymentTracker;
+  final Map<String, double> paymentTracker;
   const Investor({
     required this.paymentTracker,
     required this.id,
@@ -30,8 +31,8 @@ class Investor {
       amount = investorJson['amount'],
       ninNumber = investorJson['ninNumber'],
       date = DateTime.parse(investorJson['date']),
-      paymentTracker = investorJson['paymentTracker'];
-
+      paymentTracker = (investorJson['paymentTracker'] as Map<String, dynamic>)
+          .map((date, amount) => MapEntry(date, amount));
   Map<String, dynamic> investorToJson() => {
     if (id != null) '_id': id,
     'name': name,
@@ -41,6 +42,19 @@ class Investor {
     'telephoneNumber': telephoneNumber,
     'interestRate': interestRate,
     'date': date.toIso8601String(),
-    'payment': paymentTracker,
+    'paymentTracker': paymentTracker,
   };
+
+  double calculatePayout(){
+     double amount = 0 ;
+     paymentTracker.forEach((date , payment){
+      amount += payment;
+     });
+    return amount ;
+  }
+
+  int totalMonth(){
+   final results = DateTime.now().difference(date);
+     return (results.inDays / 30).floor() ;
+  }
 }

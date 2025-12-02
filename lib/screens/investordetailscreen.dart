@@ -108,18 +108,20 @@ class InvestorDetailScreen extends ConsumerWidget {
                         children: [
                           TableHeaderRow(value: 'Payment Date'),
                           TableHeaderRow(value: 'Amount'),
+                          TableHeaderRow(value: 'Received'),
                         ],
                       ),
 
-                      TableRow(
+              for(var element in investor.paymentTracker.entries)   TableRow(
                         children: [
                           TablesRow(
-                            value: DateFormat.yMd().format(investor.date),
+                            value: DateFormat.yMd().format(DateTime.parse(element.key)),
                           ),
                           TablesRow(
-                            value: '2000 Ugx'
+                            value: '${element.value.ceil()} Ugx'
                                 .toMoney(),
                           ),
+                         const Icon(IconsaxPlusLinear.shield_tick)
                         ],
                       ),
                     ],

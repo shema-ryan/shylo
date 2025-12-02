@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
@@ -16,21 +15,26 @@ class InvestorCard extends ConsumerWidget {
   final double height;
 
   @override
-  Widget build(BuildContext context , WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-      
-      color:Color.fromARGB(255, 243, 251, 246) ,
+      color: Color.fromARGB(255, 243, 251, 246),
       // shadowColor: Colors.black,
       // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
 
       // elevation: 1,
       child: Row(
         children: [
-          Container(width: 5,decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(5) , bottomLeft: Radius.circular(5))
-          ),),
+          Container(
+            width: 5,
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(5),
+                bottomLeft: Radius.circular(5),
+              ),
+            ),
+          ),
           Expanded(
             child: Column(
               spacing: 2,
@@ -44,16 +48,22 @@ class InvestorCard extends ConsumerWidget {
                     investor.name,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  trailing: TextButton(onPressed:()async{
-                   try {
-                     await  ref.read(investorProvider.notifier).deleteInvestor(id: investor.id!);
-                   } catch (e) {
-                     showErrorMessage(message: e.toString());
-                   }
-                  }, style: TextButton.styleFrom(
-                    foregroundColor: Colors.redAccent
-                  ),child: Text('Delete' ,) ,),
-                  subtitle: Text('Full Name' ,),
+                  trailing: TextButton(
+                    onPressed: () async {
+                      try {
+                        await ref
+                            .read(investorProvider.notifier)
+                            .deleteInvestor(id: investor.id!);
+                      } catch (e) {
+                        showErrorMessage(message: e.toString());
+                      }
+                    },
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.redAccent,
+                    ),
+                    child: Text('Delete'),
+                  ),
+                  subtitle: Text('Full Name'),
                 ),
                 Divider(indent: 10, endIndent: 10),
                 Row(
@@ -95,7 +105,7 @@ class InvestorCard extends ConsumerWidget {
                     ),
                   ],
                 ),
-            
+
                 Divider(color: Colors.black12, indent: 10, endIndent: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -115,9 +125,21 @@ class InvestorCard extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const Text('Available balance'),
+                        Text(
+                          ' ${investor.calculatePayout()} Ugx'.toMoney(),
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         const Text(' Earnings'),
                         Text(
-                          ' ${investor.amount * investor.interestRate / 100 } Ugx '.toMoney(),
+                          ' ${investor.amount * investor.interestRate / 100 * (investor.totalMonth())} Ugx '
+                              .toMoney(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.blue,
