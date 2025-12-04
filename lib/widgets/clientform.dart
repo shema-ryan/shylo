@@ -525,7 +525,7 @@ class _ClientFormState extends ConsumerState<ClientForm> {
                       onPressed: () async {
                         if (_key.currentState!.validate()) {
                           _key.currentState!.save();
-                          final unique =  listClient.isEmpty ? 1 : listClient.last.uniqueId + 1;
+                          final unique =  listClient.isEmpty ? 1.0 : listClient.last.uniqueId + 1;
                           try {
                             await ref
                                 .read(clientProvider.notifier)

@@ -13,23 +13,27 @@ class Investorcontroller extends StateNotifier<List<Investor>> {
         .collection('investorCollection')
         .find()
         .toList();
-    // empty the state 
-    state =[];
+    // empty the state
+    state = [];
     for (var result in results) {
       state.add(Investor.fromJson(result));
     }
-    state = [... state];
+    state = [...state];
   }
-// remove an investor 
-Future<void> deleteInvestor({required ObjectId id})async{
-  try {
-    await DbController.database.db!.collection('investorCollection').remove({'_id': id});
-    state.removeWhere((investor)=> investor.id == id);
-    state = [... state];
-  } catch (e) {
-    rethrow ;
+
+  // remove an investor
+  Future<void> deleteInvestor({required ObjectId id}) async {
+    try {
+      await DbController.database.db!.collection('investorCollection').remove({
+        '_id': id,
+      });
+      state.removeWhere((investor) => investor.id == id);
+      state = [...state];
+    } catch (e) {
+      rethrow;
+    }
   }
-}
+
   // adding an investor
   Future<void> addInvestor({required Investor investor}) async {
     try {
@@ -51,7 +55,33 @@ Future<void> deleteInvestor({required ObjectId id})async{
       rethrow;
     }
   }
-}
+
+  double calculateInvestement(){
+    double amount = 0 ;
+    for (var investor in state){
+      amount += investor.amount;
+    }
+    return amount;
+  }
+
+  Future<void> updateInvestor({required Investor investor}) async {
+    try {
+      await DbController.database.db!
+          .collection('investorCollection')
+          .update(
+            where.eq('_id', investor.id),
+            modify.set('paymentTracker', investor.paymentTracker),
+          );
+         final index =  state.indexWhere((element)=> element.id == investor.id);
+          state.removeAt(index);
+          state.insert(index, investor);
+
+           state = [... state];
+    } catch (e) {
+      rethrow;
+    }
+  }
+} //
 
 final investorProvider =
     StateNotifierProvider<Investorcontroller, List<Investor>>(

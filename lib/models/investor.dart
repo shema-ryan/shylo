@@ -57,4 +57,9 @@ class Investor {
    final results = DateTime.now().difference(date);
      return (results.inDays / 30).floor() ;
   }
+
+  double checkBalance(double amount){
+    final results = (amount * interestRate / 100 * totalMonth())- (calculatePayout() + amount);
+    return results ;
+  }
 }

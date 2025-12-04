@@ -135,6 +135,19 @@ class Loancontroller extends StateNotifier<List<Loan>> {
     return loan.principleAmount +
         (loan.principleAmount * loan.interestRate / 100) * months;
   }
+
+  double outStandingbalance() {
+    double amount = 0;
+    final activeLoans = state.where(
+      (loan) =>
+          loan.loanStatus == LoanStatus.disbursed ||
+          loan.loanStatus == LoanStatus.partial,
+    );
+    for (var loan in activeLoans) {
+      amount += calculateBalance(loan: loan);
+    }
+    return amount;
+  }
 }
 
 final loanProvider = StateNotifierProvider<Loancontroller, List<Loan>>(

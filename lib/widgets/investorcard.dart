@@ -127,7 +127,7 @@ class InvestorCard extends ConsumerWidget {
                       children: [
                         const Text('Available balance'),
                         Text(
-                          ' ${investor.calculatePayout()} Ugx'.toMoney(),
+                          ' ${investor.checkBalance(0)} Ugx'.toMoney(),
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],

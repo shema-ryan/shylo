@@ -1,9 +1,7 @@
 import 'package:mongo_dart/mongo_dart.dart';
-
 enum MartialStatus { single, married, divorced }
-
 class Client {
-  final int uniqueId;
+  final double uniqueId;
   final ObjectId? id;
   final String surName;
   final String lastName;
@@ -48,9 +46,9 @@ class Client {
   Client.fromJson(Map<String, dynamic> clientJson)
     : id = clientJson['_id'],
       guaranterNin = clientJson['guaranterNin'],
-      guaranterPhoneNumber = clientJson['guaranterPhoneNumber'],
+      guaranterPhoneNumber =clientJson['guaranterPhoneNumber'] ,
       guaranterName = clientJson['guaranterName'],
-      uniqueId = clientJson['uniqueId'],
+      uniqueId =clientJson['uniqueId'],
       surName = clientJson['surName'],
       lastName = clientJson['lastName'],
       status = MartialStatus.values.firstWhere(
@@ -66,7 +64,7 @@ class Client {
       kinNumber = clientJson['kinNumber'],
       kinRelation = clientJson['kinRelation'],
       phoneNumber = clientJson['phoneNumber'],
-      privatePhoneNumber = clientJson['privatePhoneNumber'];
+      privatePhoneNumber = clientJson['privatePhoneNumber'] ;
 
   Map<String, dynamic> clientToJson() => {
     if (id != null) '_id': id,

@@ -1,22 +1,52 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shylo/controllers/clientcontroller.dart';
+import 'package:shylo/controllers/investorcontroller.dart';
+import 'package:shylo/controllers/loancontroller.dart';
 import 'package:shylo/controllers/navigatorcontroller.dart';
 import 'package:shylo/models/usermodel.dart';
 import 'package:shylo/screens/customerscreen.dart';
 import 'package:shylo/screens/investorscreen.dart';
 import 'package:shylo/screens/loanscreen.dart';
+import 'package:shylo/widgets/success.dart';
 import '../widgets/navigationview.dart';
+import 'dashboardscreen.dart';
 
-class HomeScreen extends ConsumerWidget {
-  final int? previous ;
+class HomeScreen extends ConsumerStatefulWidget {
+  final int? previous;
   final UserModel userModel;
-  const HomeScreen({super.key ,required this.userModel , required this.previous});
+  const HomeScreen({
+    super.key,
+    required this.userModel,
+    required this.previous,
+  });
+
   @override
-  Widget build(BuildContext context , WidgetRef ref) {
-    int selectedIndex =  previous??ref.watch(navigatorProvider);
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+ 
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+      Future.delayed(Duration.zero, ()async{
+        try {
+          await ref.read(clientProvider.notifier).fetchAllClient();
+          await ref.read(loanProvider.notifier).fetchAllLoans();
+          await ref.read(investorProvider.notifier).fetchAllInvestor();
+        } catch (e) {
+          showErrorMessage(message: e.toString());
+        }
+      });
+    
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    int selectedIndex = widget.previous ?? ref.watch(navigatorProvider);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xffFCFCFD),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final height = constraints.maxHeight;
@@ -49,24 +79,13 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-
-
 const screenList = [
   DashBoardScreen(),
   CustomerScreen(),
   LoanScreen(),
   InvestorScreen(),
   CustomerScreen(),
-
 ];
 
 
 
-class DashBoardScreen extends StatelessWidget {
-  const DashBoardScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('DashBoard screen'),);
-  }
-}
