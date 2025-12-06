@@ -1,7 +1,9 @@
 import 'package:mongo_dart/mongo_dart.dart';
+
 enum LoanStatus { disbursed, partial, overDue, complete }
+
 class Loan {
-  final int loanId ;
+  final int loanId;
   ObjectId? id;
   final ObjectId client;
   final DateTime obtainDate;
@@ -11,11 +13,11 @@ class Loan {
   final double principleAmount;
   final Map<String, double> paymentTrack;
   final String reason;
-  final String collateral ;
-  final String remarks ;
+  final String collateral;
+  final String remarks;
 
   Loan({
-    required this.remarks, 
+    required this.remarks,
     required this.loanId,
     required this.reason,
     required this.client,
@@ -27,7 +29,6 @@ class Loan {
     required this.principleAmount,
     required this.paymentTrack,
     required this.collateral,
-
   });
   Loan.fromJson(Map<String, dynamic> loanJson)
     : id = loanJson['_id'],
@@ -49,10 +50,10 @@ class Loan {
 
   Map<String, dynamic> loanToJson() => {
     if (id != null) 'id': id,
-    'loanId':loanId,
+    'loanId': loanId,
     'clientId': client,
     'reason': reason,
-    'remarks':remarks,
+    'remarks': remarks,
     'collateral': collateral,
     'dueDate': dueDate.toIso8601String(),
     'interestRate': interestRate,
@@ -61,4 +62,17 @@ class Loan {
     'principleAmount': principleAmount,
     'paymentTrack': paymentTrack,
   };
+  double calculatePaidAmount() {
+    double amount = 0;
+    paymentTrack.forEach((_, price) {
+      amount += price;
+    });
+    return amount;
+  }
+
+  // calculate balance .
+  double calculateTotalAmount() {
+    final months = dueDate.difference(obtainDate).inDays / 30;
+    return (principleAmount + (principleAmount * months));
+  }
 }

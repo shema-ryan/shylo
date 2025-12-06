@@ -79,7 +79,7 @@ class DashBoardScreen extends ConsumerWidget {
               child: Table(
                 border: TableBorder(
                   horizontalInside: BorderSide(color: Colors.grey),
-                
+
                   bottom: BorderSide(color: Colors.grey),
                 ),
                 children: [

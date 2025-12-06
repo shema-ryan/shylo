@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,7 +7,9 @@ import 'package:shylo/controllers/clientcontroller.dart';
 import 'package:shylo/controllers/loancontroller.dart';
 import 'package:shylo/controllers/loansearchcontroller.dart';
 import 'package:shylo/models/moneyformat.dart';
+import 'package:shylo/models/pdfgenerator.dart';
 import 'package:shylo/widgets/loanform.dart';
+import 'package:shylo/widgets/success.dart';
 import 'package:shylo/widgets/tableheaderrow.dart';
 import 'package:shylo/widgets/tablerow.dart';
 
@@ -105,40 +106,70 @@ class LoanItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final filteredLoans = ref.watch(filteredProvider(loans));
+    final allClients = ref.read(clientProvider);
     return LayoutBuilder(
       builder: (context, constraints) {
         return SizedBox(
-                height: constraints.maxHeight,
-                width: constraints.maxWidth,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    spacing: 5,
-                    children: [
-                      Row(
-                        children: [
-                         const Spacer(), SizedBox(
-                            width: 500,
-                            child: TextField(
-                              onChanged: (value){
-                                ref.read(searchProvider.notifier).update((_)=>value);
-                              },
-                              decoration: InputDecoration(
-
-                                border: InputBorder.none,
-                                filled: true,
-                                
-                                fillColor: Theme.of(context).primaryColor.withAlpha(10),
-                                labelText: 'search with name .  .  .  .  .  .  ',
-                                 
-                                suffix: Icon(IconsaxPlusBroken.search_normal , size: 15,)
-                              ),
-                            ),
+          height: constraints.maxHeight,
+          width: constraints.maxWidth,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              spacing: 5,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: 300,
+                      child: TextField(
+                        onChanged: (value) {
+                          ref
+                              .read(searchProvider.notifier)
+                              .update((_) => value);
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
                           ),
-                        ],
+                          filled: true,
+                          fillColor: Theme.of(
+                            context,
+                          ).primaryColor.withAlpha(10),
+                          labelText: 'search with name .  .  .  .  .  .  ',
+
+                          prefixIcon: Icon(
+                            IconsaxPlusBroken.search_normal,
+                            size: 15,
+                          ),
+                        ),
                       ),
-                      Expanded(
-                        child: filteredLoans.isEmpty? const Center(child: Text('No Loan Available.'),): Table(
+                    ),
+                    TextButton.icon(
+                      onPressed: () async {
+                        try {
+                          await PdfCreator.generateLoansReport(
+                            loans: filteredLoans,
+                            identifier: filteredLoans[0].loanStatus.name,
+                            clients: allClients,
+                          );
+                          showSuccessMessage(
+                            message: 'Report generated Successfully..',
+                          );
+                        } catch (e) {
+                          showErrorMessage(message: e.toString());
+                        }
+                      },
+                      label: const Text('Generate report'),
+                      icon: const Icon(Icons.file_upload),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: filteredLoans.isEmpty
+                      ? const Center(child: Text('No Loan Available.'))
+                      : Table(
                           border: TableBorder(
                             horizontalInside: BorderSide(color: Colors.black12),
                             bottom: BorderSide(color: Colors.black12),
@@ -146,7 +177,7 @@ class LoanItem extends ConsumerWidget {
                           children: [
                             TableRow(
                               children: [
-                               const  TableHeaderRow(value: 'Id'),
+                                const TableHeaderRow(value: 'Id'),
                                 TableHeaderRow(value: 'Amount'),
                                 TableHeaderRow(value: 'Full Payment'),
                                 TableHeaderRow(value: 'Purpose'),
@@ -163,10 +194,13 @@ class LoanItem extends ConsumerWidget {
                                         context,
                                       ).go('/loandetailscreen', extra: loan);
                                     },
-                                    child: TablesRow(value: 'SHY-LN-${loan.loanId}'),
+                                    child: TablesRow(
+                                      value: 'SHY-LN-${loan.loanId}',
+                                    ),
                                   ),
                                   TablesRow(
-                                    value: '${loan.principleAmount} Ugx'.toMoney(),
+                                    value: '${loan.principleAmount} Ugx'
+                                        .toMoney(),
                                   ),
                                   TablesRow(
                                     value:
@@ -175,20 +209,24 @@ class LoanItem extends ConsumerWidget {
                                   ),
                                   TablesRow(value: loan.reason),
                                   TablesRow(
-                                    value: DateFormat.yMd().format(loan.obtainDate),
+                                    value: DateFormat.yMd().format(
+                                      loan.obtainDate,
+                                    ),
                                   ),
                                   TablesRow(
-                                    value: DateFormat.yMd().format(loan.dueDate),
+                                    value: DateFormat.yMd().format(
+                                      loan.dueDate,
+                                    ),
                                   ),
                                 ],
                               ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
                 ),
-              );
+              ],
+            ),
+          ),
+        );
       },
     );
   }
