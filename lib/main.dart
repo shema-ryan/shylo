@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shylo/controllers/databasecontroller.dart';
 import 'package:shylo/controllers/localnotification.dart';
 import 'package:shylo/models/model.dart';
-import 'package:shylo/models/pdfgenerator.dart';
 import 'package:shylo/routes.dart';
 
 void main() async {

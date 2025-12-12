@@ -3,7 +3,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 enum LoanStatus { disbursed, partial, overDue, complete }
 
 class Loan {
-  final int loanId;
+  final double loanId;
   ObjectId? id;
   final ObjectId client;
   final DateTime obtainDate;
@@ -34,7 +34,7 @@ class Loan {
     : id = loanJson['_id'],
       collateral = loanJson['collateral'],
       remarks = loanJson['remarks'],
-      loanId = loanJson['loanId'],
+      loanId = loanJson['loanId'] ,
       obtainDate = DateTime.parse(loanJson['obtainDate']),
       dueDate = DateTime.parse(loanJson['dueDate']),
       interestRate = loanJson['interestRate'],
