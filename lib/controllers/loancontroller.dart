@@ -130,10 +130,9 @@ class Loancontroller extends StateNotifier<List<Loan>> {
   }
 
   double amountTopay(Loan loan) {
-    final months = (loan.dueDate.difference(loan.obtainDate).inDays / 30)
-        .ceil();
-    return loan.principleAmount +
-        (loan.principleAmount * loan.interestRate / 100) * months;
+    final days = loan.dueDate.difference(loan.obtainDate).inDays;
+    return (loan.principleAmount +
+        (loan.principleAmount * loan.interestRate / 3000) * (days + 1)).roundToDouble();
   }
 
   double outStandingbalance() {

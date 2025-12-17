@@ -72,7 +72,7 @@ class Loan {
 
   // calculate balance .
   double calculateTotalAmount() {
-    final months = dueDate.difference(obtainDate).inDays / 30;
-    return (principleAmount + (principleAmount * months));
+    final days = dueDate.difference(obtainDate).inDays / 30;
+    return (principleAmount + (principleAmount * (days + 1) * interestRate / 3000)).roundToDouble();
   }
 }

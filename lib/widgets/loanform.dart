@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide FormField;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:shylo/models/moneyformat.dart';
 import 'package:shylo/widgets/success.dart';
 import '../controllers/loancontroller.dart';
 import 'package:shylo/models/loan.dart';
@@ -35,6 +36,7 @@ class _LoanFormState extends ConsumerState<LoanForm> {
       icon: const Icon(Icons.add),
       onPressed: () {
         showDialog(
+          barrierDismissible: false,
           context: context,
           builder: (context) => StatefulBuilder(
             builder: (context, setState) {
@@ -87,7 +89,6 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                             ),
                             const SizedBox(width: 10),
                             Expanded(
-
                               child: FormField(
                                 initialValue: '',
                                 isNumber: true,
@@ -137,7 +138,6 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                           children: [
                             Expanded(
                               child: DropdownButtonFormField<Client>(
-                             
                                 borderRadius: BorderRadius.circular(5),
                                 validator: (value) {
                                   if (value == null) {
@@ -148,7 +148,6 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                                 },
                                 onSaved: (value) {},
                                 decoration: InputDecoration(
-                                  
                                   hintText: 'select client',
                                   focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
@@ -193,6 +192,7 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                                   );
                                   if (pickedDate.runtimeType == DateTime) {
                                     setState(() {
+                                      _key.currentState!.save();
                                       dueDate = pickedDate;
                                     });
                                   }
@@ -231,7 +231,6 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                         Row(
                           children: [
                             Expanded(
-
                               child: FormField(
                                 initialValue: '',
                                 isNumber: false,
@@ -270,6 +269,34 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                             ),
                           ],
                         ),
+                       
+
+                        if (dueDate.runtimeType == DateTime) ...[
+                          AutoSizeText(
+                            'Estimated PayOut',
+                            style: Theme.of(context).textTheme.bodyMedium!
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
+                      
+                          AnimatedContainer(
+                            height: dueDate.runtimeType == DateTime ? 40 : 0,
+                            width: 300,
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).primaryColor.withAlpha(50),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            curve: Curves.easeInBack,
+                            alignment: Alignment.center,
+                            duration: const Duration(milliseconds: 1),
+                            child: AutoSizeText(
+                              ' Amount : ${estimatedPayOut(principleAmount!, interestRate!, -DateTime.now().difference(dueDate!).inDays)} Ugx'
+                                  .toMoney(),
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -277,6 +304,7 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                     OutlinedButton.icon(
                       icon: Icon(Icons.cancel),
                       onPressed: () {
+                        dueDate = null;
                         Navigator.of(context).pop();
                       },
                       label: const Text('cancel'),
@@ -331,3 +359,7 @@ class _LoanFormState extends ConsumerState<LoanForm> {
     );
   }
 }
+
+double estimatedPayOut(double amount, double rate, int days) {
+    print('i was given $amount at $rate valid for $days ');
+    return amount + ( amount * rate / 3000 * (days+1) ).roundToDouble();}

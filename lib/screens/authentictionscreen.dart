@@ -49,6 +49,7 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
     return Form(
       key: _formkey,
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: LayoutBuilder(
           builder: (context, constraints) {
             final appHeight = constraints.maxHeight;
@@ -148,11 +149,12 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
                     ),
                     SizedBox(height: appHeight * 0.02),
                     SizedBox(
-                      height: appHeight * 0.06,
+                    
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xff34dd00),
+                          padding:  EdgeInsets.symmetric(vertical: appHeight * 0.025 )
                         ),
                         onPressed: () async {
                           if (_formkey.currentState!.validate()) {
@@ -196,19 +198,16 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
                             // } catch (e) {
                             //   setState(() {
                             //     isLoading = false ;
-                            //   });
+                            //   }); 
                             //   showErrorMessage(message: e.toString());
                             // }
                           }
                         },
                         child:  isLoading ? CircularProgressIndicator(
                           color: Colors.white70,
-                          
                           strokeWidth: 2,
-                          padding: const EdgeInsets.all(3),
-                           
-
-                        ): const Text('Login'),
+                          padding: const EdgeInsets.all(1)
+                        ): const AutoSizeText('Login'),
                       ),
                     ),
                     SizedBox(height: appHeight * 0.01),

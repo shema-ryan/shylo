@@ -16,7 +16,7 @@ import '../widgets/dashboardcard.dart';
 class DashBoardScreen extends ConsumerWidget {
   const DashBoardScreen({super.key});
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) { 
     final allClient = ref.watch(clientProvider);
     ref.watch(investorProvider);
     final allLoans = ref.watch(loanProvider);
@@ -41,7 +41,7 @@ class DashBoardScreen extends ConsumerWidget {
                 children: [
                   DashBoardCard(
                     color: Colors.green,
-                    data: IconsaxPlusBroken.bank,
+                    data: IconsaxPlusBroken.dollar_square,
                     title: 'Total Outstandings',
                     subtitle:
                         '${ref.read(loanProvider.notifier).outStandingbalance()} Ugx'
