@@ -23,7 +23,8 @@ class WindowsNotification {
     // lets show the notification herer
 static Future<void>showNotification({required String title , required String body})async{
   int id = Random().nextInt(20);
-  await _notification.show(id, title, body, NotificationDetails(
+  await _notification.show(
+    id, title, body, NotificationDetails(
     windows: WindowsNotificationDetails(
       
     )

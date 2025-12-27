@@ -37,20 +37,22 @@ class _InvestorScreenState extends ConsumerState<InvestorScreen> {
               children: [
                 const SizedBox(width: 5),
                 SizedBox(
-                  width: width * 0.4,
+                  width: width * 0.3,
                   child: TextField(
                     onChanged: (value) {},
                     decoration: InputDecoration(
+                      constraints: BoxConstraints(maxHeight: 45),
                       filled: true,
                       fillColor: Theme.of(context).primaryColor.withAlpha(10),
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(5),
                       ),
                       prefixIcon: const Icon(
                         IconsaxPlusLinear.search_favorite,
                         size: 15,
                       ),
+                      labelStyle: TextStyle(fontSize: 15),
                       labelText: 'search using name. . . . .',
                     ),
                   ),
@@ -80,7 +82,7 @@ class _InvestorScreenState extends ConsumerState<InvestorScreen> {
                 ),
                 itemBuilder: (context, index) => GestureDetector(
                   onTap: () {
-                    goRouter.go(
+                    goRouter.push(
                       '/investordetailscreen',
                       extra: investorList[index],
                     );

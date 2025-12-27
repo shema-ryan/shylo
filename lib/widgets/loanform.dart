@@ -27,12 +27,13 @@ class _LoanFormState extends ConsumerState<LoanForm> {
   String? reason;
   String? collateral;
   String? remarks;
+  bool isloading = false;
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final clientList = ref.read(clientProvider);
-    return ElevatedButton.icon(
+    return OutlinedButton.icon(
       icon: const Icon(Icons.add),
       onPressed: () {
         showDialog(
@@ -269,7 +270,6 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                             ),
                           ],
                         ),
-                       
 
                         if (dueDate.runtimeType == DateTime) ...[
                           AutoSizeText(
@@ -277,7 +277,7 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                             style: Theme.of(context).textTheme.bodyMedium!
                                 .copyWith(fontWeight: FontWeight.bold),
                           ),
-                      
+
                           AnimatedContainer(
                             height: dueDate.runtimeType == DateTime ? 40 : 0,
                             width: 300,
@@ -301,53 +301,65 @@ class _LoanFormState extends ConsumerState<LoanForm> {
                     ),
                   ),
                   actions: [
-                    OutlinedButton.icon(
-                      icon: Icon(Icons.cancel),
-                      onPressed: () {
-                        dueDate = null;
-                        Navigator.of(context).pop();
-                      },
-                      label: const Text('cancel'),
-                    ),
-                    ElevatedButton.icon(
-                      icon: Icon(Icons.save),
-                      onPressed: () async {
-                        if (_key.currentState!.validate()) {
-                          _key.currentState!.save();
-                          try {
-                            final loanId = ref.read(loanProvider).isEmpty
-                                ? 0
-                                : ref.read(loanProvider).last.loanId;
-                            await ref
-                                .read(loanProvider.notifier)
-                                .registerLoan(
-                                  Loan(
-                                    remarks: remarks!,
-                                    collateral: collateral!,
-                                    loanId: loanId + 1,
-                                    reason: reason!,
-                                    client: clientName!.id!,
-                                    id: null,
-                                    dueDate: dueDate!,
-                                    interestRate: interestRate!,
-                                    loanStatus: LoanStatus.disbursed,
-                                    obtainDate: DateTime.now(),
-                                    principleAmount: principleAmount!,
-                                    paymentTrack: {
-                                      DateTime.now().toIso8601String(): 0,
-                                    },
-                                  ),
-                                );
-                            dueDate = null;
-                            if (context.mounted) Navigator.of(context).pop();
-                          } catch (e) {
-                            if (context.mounted) Navigator.of(context).pop();
-                            showErrorMessage(message: e.toString());
-                          }
-                        }
-                      },
-                      label: const Text('Apply'),
-                    ),
+                    if (!isloading)
+                      OutlinedButton.icon(
+                        icon: Icon(Icons.cancel),
+                        onPressed: () {
+                          dueDate = null;
+                          Navigator.of(context).pop();
+                        },
+                        label: const Text('cancel'),
+                      ),
+                    isloading
+                        ? CircularProgressIndicator(strokeWidth: 1)
+                        : ElevatedButton.icon(
+                            icon: Icon(Icons.save),
+                            onPressed: () async {
+                              if (_key.currentState!.validate()) {
+                                _key.currentState!.save();
+                                try {
+                                  setState(() {
+                                    isloading = true;
+                                  });
+                                  final loanId = ref.read(loanProvider).isEmpty
+                                      ? 0
+                                      : ref.read(loanProvider).last.loanId;
+                                  await ref
+                                      .read(loanProvider.notifier)
+                                      .registerLoan(
+                                        Loan(
+                                          remarks: remarks!,
+                                          collateral: collateral!,
+                                          loanId: loanId + 1,
+                                          reason: reason!,
+                                          client: clientName!.id!,
+                                          id: null,
+                                          dueDate: dueDate!,
+                                          interestRate: interestRate!,
+                                          loanStatus: LoanStatus.disbursed,
+                                          obtainDate: DateTime.now(),
+                                          principleAmount: principleAmount!,
+                                          paymentTrack: {
+                                            DateTime.now().toIso8601String(): 0,
+                                          },
+                                        ),
+                                      );
+                                  dueDate = null;
+                                  isloading = false;
+                                  if (context.mounted) {
+                                    Navigator.of(context).pop();
+                                  }
+                                } catch (e) {
+                                  isloading = false;
+                                  if (context.mounted) {
+                                    Navigator.of(context).pop();
+                                  }
+                                  showErrorMessage(message: e.toString());
+                                }
+                              }
+                            },
+                            label: Text('Save'),
+                          ),
                   ],
                 ),
               );
@@ -361,5 +373,5 @@ class _LoanFormState extends ConsumerState<LoanForm> {
 }
 
 double estimatedPayOut(double amount, double rate, int days) {
-    print('i was given $amount at $rate valid for $days ');
-    return amount + ( amount * rate / 3000 * (days+1) ).roundToDouble();}
+  return amount + (amount * rate / 3000 * (days + 1)).roundToDouble();
+}

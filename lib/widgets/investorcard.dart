@@ -19,10 +19,6 @@ class InvestorCard extends ConsumerWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       color: Color.fromARGB(255, 243, 251, 246),
-      // shadowColor: Colors.black,
-      // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-
-      // elevation: 1,
       child: Row(
         children: [
           Container(
@@ -127,7 +123,7 @@ class InvestorCard extends ConsumerWidget {
                       children: [
                         const Text('Available balance'),
                         Text(
-                          ' ${investor.checkBalance(0)} Ugx'.toMoney(),
+                          ' ${investor.totalIncome() - investor.calculatePayout()} Ugx'.toMoney(),
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -138,7 +134,7 @@ class InvestorCard extends ConsumerWidget {
                       children: [
                         const Text(' Earnings'),
                         Text(
-                          ' ${investor.amount * investor.interestRate / 100 * (investor.totalMonth())} Ugx '
+                          ' ${investor.totalIncome()} Ugx '
                               .toMoney(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,

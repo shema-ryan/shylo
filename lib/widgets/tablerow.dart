@@ -5,9 +5,9 @@ class TablesRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(5),
-      child: Text(value),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Text(value , overflow: TextOverflow.ellipsis,),
     );
   }
 }

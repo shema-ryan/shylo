@@ -89,11 +89,9 @@ class ClientController extends StateNotifier<List<Client>> {
     }
   }
 
-  Future<String> getUserName(ObjectId id) async {
-    final results = await DbController.database.db!
-        .collection('clientCollection')
-        .findOne({"_id": id});
-    return results!['surName'];
+  String getUserName(ObjectId id)  {
+   final client =  state.firstWhere((object)=> object.id == id);
+    return '${client.surName} ${client.lastName}';
   }
 }
 

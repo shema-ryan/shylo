@@ -28,7 +28,6 @@ class DashBoardScreen extends ConsumerWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final height = constraints.maxHeight;
-        final width = constraints.maxWidth;
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

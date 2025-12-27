@@ -7,8 +7,9 @@ import 'package:intl/intl.dart';
 import 'package:mongo_dart/mongo_dart.dart' hide Center;
 import 'package:shylo/controllers/clientcontroller.dart';
 import 'package:shylo/controllers/loancontroller.dart';
-import 'package:shylo/controllers/userauthenticationcontroller.dart';
+import 'package:shylo/controllers/useraccountcontroller.dart';
 import 'package:shylo/models/moneyformat.dart';
+import 'package:shylo/models/usermodel.dart';
 import 'package:shylo/widgets/success.dart';
 import 'package:shylo/widgets/tableheaderrow.dart';
 import 'package:shylo/widgets/tablerow.dart';
@@ -22,128 +23,124 @@ class LoanDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final allLoans = ref.watch(loanProvider);
     final loan = allLoans.firstWhere((element) => element.id == id);
+    final loggedUser = ref.read(userAccountProvider);
 
-    final allClient = ref
-        .watch(clientProvider);
-
-        final client = allClient.firstWhere((element) {
-          print('element id ${element.id} isnt equal ${loan.client}'); 
-          return element.id== loan.client;
-        });
+    final allClient = ref.watch(clientProvider);
+    final client = allClient.firstWhere((element) {
+      return element.id == loan.client;
+    });
     var clienPaymentDates = loan.paymentTrack.keys;
     var clientPaymentAmount = loan.paymentTrack.values;
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton.small(
-        child: const Icon(Icons.add),
-        onPressed: () async {
-          await showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              titlePadding: const EdgeInsets.all(0),
-              title: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withAlpha(100),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(5),
-                    topRight: Radius.circular(5),
-                  ),
-                ),
-                child: Center(
-                  child: Text(
-                    'Make Payment',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleMedium!.copyWith(color: Colors.white),
-                  ),
-                ),
-              ),
-              content: TextField(
-                controller: amountController,
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                decoration: const InputDecoration(hintText: 'amount'),
-              ),
-              actions: [
-                OutlinedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Cancel'),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(
-                      context,
-                    ).primaryColor.withAlpha(100),
-                  ),
-                  onPressed: () async {
-                    if (amountController.value.text.isNotEmpty) {
-                      if ((ref
+      floatingActionButton:
+          !loggedUser!.userRoles.contains(UserRoles.administrator)
+          ? null
+          : FloatingActionButton.small(
+              child: const Icon(Icons.add),
+              onPressed: () async {
+                await showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    titlePadding: const EdgeInsets.all(0),
+                    title: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor.withAlpha(100),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(5),
+                          topRight: Radius.circular(5),
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Make Payment',
+                          style: Theme.of(context).textTheme.titleMedium!
+                              .copyWith(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    content: TextField(
+                      controller: amountController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: const InputDecoration(hintText: 'amount'),
+                    ),
+                    actions: [
+                      OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Cancel'),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(
+                            context,
+                          ).primaryColor.withAlpha(100),
+                        ),
+                        onPressed: () async {
+                          if (amountController.value.text.isNotEmpty) {
+                            if ((ref
+                                        .read(loanProvider.notifier)
+                                        .calculateBalance(loan: loan) -
+                                    double.parse(amountController.value.text))
+                                .isNegative) {
+                              Navigator.of(context).pop();
+                              showErrorMessage(
+                                message: 'amount must be less than balance',
+                              );
+                              return;
+                            }
+                            try {
+                              await ref
                                   .read(loanProvider.notifier)
-                                  .calculateBalance(loan: loan) -
-                              double.parse(amountController.value.text))
-                          .isNegative) {
-                        Navigator.of(context).pop();
-                        showErrorMessage(
-                          message: 'amount must be less than balance',
-                        );
-                        return;
-                      }
-                      try {
-                        await ref
-                            .read(loanProvider.notifier)
-                            .updatePayment(
-                              Loan(
-                                remarks: loan.remarks,
-                                collateral: loan.collateral,
-                                loanId: loan.loanId,
-                                reason: loan.reason,
-                                client: loan.client,
-                                id: loan.id,
-                                dueDate: loan.dueDate,
-                                interestRate: loan.interestRate,
-                                loanStatus: loan.loanStatus,
-                                obtainDate: loan.obtainDate,
-                                principleAmount: loan.principleAmount,
-                                paymentTrack: {
-                                  ...loan.paymentTrack,
-                                  DateTime.now().toIso8601String():
-                                      double.parse(amountController.text),
-                                },
-                              ),
-                            );
-                        amountController.clear();
-                        if (context.mounted) Navigator.of(context).pop();
-                      } catch (e) {
-                        if (context.mounted) Navigator.of(context).pop();
-                        showErrorMessage(message: e.toString());
-                      }
-                    }
-                  },
-                  child: const Text('Pay'),
-                ),
-              ],
+                                  .updatePayment(
+                                    Loan(
+                                      remarks: loan.remarks,
+                                      collateral: loan.collateral,
+                                      loanId: loan.loanId,
+                                      reason: loan.reason,
+                                      client: loan.client,
+                                      id: loan.id,
+                                      dueDate: loan.dueDate,
+                                      interestRate: loan.interestRate,
+                                      loanStatus: loan.loanStatus,
+                                      obtainDate: loan.obtainDate,
+                                      principleAmount: loan.principleAmount,
+                                      paymentTrack: {
+                                        ...loan.paymentTrack,
+                                        DateTime.now().toIso8601String():
+                                            double.parse(amountController.text),
+                                      },
+                                    ),
+                                  );
+                              amountController.clear();
+                              if (context.mounted) Navigator.of(context).pop();
+                            } catch (e) {
+                              if (context.mounted) Navigator.of(context).pop();
+                              showErrorMessage(message: e.toString());
+                            }
+                          }
+                        },
+                        child: const Text('Pay'),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor.withAlpha(100),
         leading: GestureDetector(
           child: Icon(IconsaxPlusLinear.arrow_left),
           onTap: () {
-            GoRouter.of(context).go(
-              '/homescreen',
-              extra: {
-                'userModel': ref.read(userAuthenticationProvider),
-                'selectedIndex': 2,
-              },
+            GoRouter.of(context).pop(
+              '/',
             );
           },
         ),
@@ -205,34 +202,32 @@ class LoanDetailScreen extends ConsumerWidget {
                       labelText: 'Due-Date ',
                       value: DateFormat.yMd().format(loan.dueDate),
                     ),
-                    IconButton(
-                      onPressed: () async {
-                        try {
-                          final pickedDate = await showDatePicker(
-                            context: context,
-                            firstDate: loan.dueDate,
-                            lastDate: DateTime.now().add(
-                              const Duration(days: 366),
-                            ),
-                          );
-                          if (pickedDate == null) {
-                          } else {
-                            await ref
-                                .read(loanProvider.notifier)
-                                .updateLoanDate(id: id, dueDate: pickedDate);
-                            showSuccessMessage(
-                              message: 'Due Date updated Sucessfully.',
+                    if (loggedUser.userRoles.contains(UserRoles.administrator))
+                      IconButton(
+                        onPressed: () async {
+                          try {
+                            final pickedDate = await showDatePicker(
+                              context: context,
+                              firstDate: loan.dueDate,
+                              lastDate: DateTime.now().add(
+                                const Duration(days: 366),
+                              ),
                             );
+                            if (pickedDate == null) {
+                            } else {
+                              await ref
+                                  .read(loanProvider.notifier)
+                                  .updateLoanDate(id: id, dueDate: pickedDate);
+                              showSuccessMessage(
+                                message: 'Due Date updated Sucessfully.',
+                              );
+                            }
+                          } catch (e) {
+                            showErrorMessage(message: e.toString());
                           }
-                        } catch (e) {
-                          showErrorMessage(message: e.toString());
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.edit,
-                        color: Colors.grey,
+                        },
+                        icon: const Icon(Icons.edit, color: Colors.grey),
                       ),
-                    ),
                   ],
                 ),
                 Text(

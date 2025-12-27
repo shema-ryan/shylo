@@ -34,7 +34,7 @@ class PdfCreator {
       final month = DateTime.now().month;
       final day = DateTime.now().day;
       final File pdfFile = File(
-        '${loansDirectory.path}/loansReport-$day-$month-$year.pdf',
+        '${loansDirectory.path}/loansReport-$day-$month-$year-${loans.first.loanStatus.name}.pdf',
       );
       final pdf = Document();
       pdf.addPage(
@@ -145,7 +145,7 @@ class PdfCreator {
                       Padding(
                         padding: EdgeInsets.all(5),
                         child: Text(
-                          '${loan.calculateTotalAmount() - loan.calculatePaidAmount()}'
+                          '${ loan.calculateTotalAmount() - loan.calculatePaidAmount()}'
                               .toMoney(),
                           style: TextStyle(fontSize: 12),
                         ),

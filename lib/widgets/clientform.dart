@@ -35,7 +35,8 @@ class _ClientFormState extends ConsumerState<ClientForm> {
   @override
   Widget build(BuildContext context) {
     final  listClient = ref.read(clientProvider);
-    return ElevatedButton(
+    return ElevatedButton.icon(
+      icon: const  Icon(IconsaxPlusLinear.add),
       onPressed: () {
         showDialog(
           context: context,
@@ -572,7 +573,7 @@ class _ClientFormState extends ConsumerState<ClientForm> {
           ),
         );
       },
-      child: const Text('Add client'),
+      label: const Text('Add client'),
     );
   }
 }

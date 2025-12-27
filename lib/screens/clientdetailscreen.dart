@@ -4,10 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shylo/controllers/clientcontroller.dart';
+import 'package:shylo/controllers/useraccountcontroller.dart';
 import 'package:shylo/widgets/clienteditform.dart';
 
-
-import '../controllers/userauthenticationcontroller.dart';
 import 'loandetailscreen.dart';
 
 class ClientDetailScreen extends ConsumerWidget {
@@ -35,12 +34,8 @@ class ClientDetailScreen extends ConsumerWidget {
         leading: GestureDetector(
           child: Icon(IconsaxPlusLinear.arrow_left),
           onTap: () {
-            GoRouter.of(context).go(
-              '/homescreen',
-              extra: {
-                'userModel': ref.read(userAuthenticationProvider),
-                'selectedIndex': 1,
-              },
+            GoRouter.of(context).pop(
+              '/',
             );
           },
         ),

@@ -53,13 +53,10 @@ class Investor {
     return amount ;
   }
 
-  int totalMonth(){
+  int _totalMonth(){
    final results = DateTime.now().difference(date);
      return (results.inDays / 30).floor() ;
   }
 
-  double checkBalance(double amount){
-    final results = (amount * interestRate / 100 * totalMonth())- (calculatePayout() + amount);
-    return results ;
-  }
+  double totalIncome()=> (amount * interestRate/100 * _totalMonth());
 }

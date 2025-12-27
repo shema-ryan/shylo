@@ -1,12 +1,8 @@
-import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
-import 'package:shylo/controllers/databasecontroller.dart';
-import 'package:shylo/controllers/localnotification.dart';
-import 'package:shylo/controllers/userauthenticationcontroller.dart';
+import 'package:shylo/controllers/useraccountcontroller.dart';
 import 'package:shylo/widgets/success.dart';
 
 class AuthenticationScreen extends ConsumerStatefulWidget {
@@ -15,32 +11,18 @@ class AuthenticationScreen extends ConsumerStatefulWidget {
   ConsumerState<AuthenticationScreen> createState() =>
       _AuthenticationScreenState();
 }
+
 class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
   final _formkey = GlobalKey<FormState>();
-  late bool isLoading ;
+  late bool isLoading;
   @override
   void initState() {
     super.initState();
     // initialize Database
-    if (context.mounted) {
-      DbController.database.db!
-          .open()
-          .then((_) {
-            WindowsNotification.showNotification(
-              body: 'Shylo',
-              title: '  Welcome to shylo enterprise..',
-            );
-            showSuccessMessage(message: 'Db Connected successfully...');
-          })
-          .onError((error, _) {
-            showErrorMessage(message: error.toString());
-            Future.delayed(const Duration(seconds: 10), () {
-              exit(-1);
-            });
-          });
-    }
-    isLoading = false ;
+ 
+    isLoading = false;
   }
+
   String? userName;
   String? passWord;
   bool isHidden = true;
@@ -149,65 +131,46 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
                     ),
                     SizedBox(height: appHeight * 0.02),
                     SizedBox(
-                    
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xff34dd00),
-                          padding:  EdgeInsets.symmetric(vertical: appHeight * 0.025 )
+                          padding: EdgeInsets.symmetric(
+                            vertical: 18,
+                          ),
                         ),
                         onPressed: () async {
                           if (_formkey.currentState!.validate()) {
                             _formkey.currentState!.save(); //
-                             try {
-                             setState(() {
+                            try {
+                              setState(() {
                                 isLoading = true;
                               });
                               await ref
-                                  .read(userAuthenticationProvider.notifier)
-                                  .login(name: userName!, passWord: passWord!);
-                              // navigate to the second screen
-                              if (context.mounted) {
-                                GoRouter.of(context).go(
-                                  '/homescreen',
-                                  extra:{
-                                    'userModel': ref.read(userAuthenticationProvider),
-                                    'selectedIndex': null ,
-                                  },
-                                );
-                              }
+                                  .read(userAccountProvider.notifier)
+                                  .signIn(userName: userName!, passWord: passWord!);
+      
                               isLoading = false;
                             } catch (e) {
-                                setState(() {
-                                isLoading = false ;
+                              setState(() {
+                                isLoading = false;
                               });
+                              _formkey.currentState!.reset();
                               showErrorMessage(message: e.toString());
+                              
                             }
-                            // try {
-                            //   await ref
-                            //       .read(userAuthenticationProvider.notifier)
-                            //       .registerUser(
-                            //         userName: userName!,
-                            //         passWord: passWord!,
-                            //       );
-                            //   showSuccessMessage(
-                            //     message: 'USER REGISTERED SUCCESFFULY',
-                            //   );
-                            //   _formkey.currentState!.reset();
-                            
-                            // } catch (e) {
-                            //   setState(() {
-                            //     isLoading = false ;
-                            //   }); 
-                            //   showErrorMessage(message: e.toString());
-                            // }
                           }
                         },
-                        child:  isLoading ? CircularProgressIndicator(
-                          color: Colors.white70,
-                          strokeWidth: 2,
-                          padding: const EdgeInsets.all(1)
-                        ): const AutoSizeText('Login'),
+                        child: isLoading
+                            ? CircularProgressIndicator(
+                                constraints: BoxConstraints(
+                                  minHeight: 20,
+                                  minWidth: 20,
+                                ),
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              )
+                            : const AutoSizeText('Login', style: TextStyle(fontSize: 16),),
                       ),
                     ),
                     SizedBox(height: appHeight * 0.01),
@@ -226,8 +189,3 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
   }
 }
 // let's do loading state .
-
-
-
-
-

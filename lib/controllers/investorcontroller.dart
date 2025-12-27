@@ -73,9 +73,9 @@ class Investorcontroller extends StateNotifier<List<Investor>> {
             modify.set('paymentTracker', investor.paymentTracker),
           );
          final index =  state.indexWhere((element)=> element.id == investor.id);
-          state.removeAt(index);
+         print('we have got  this index.');
+          state.removeWhere((element)=> element.id == investor.id);
           state.insert(index, investor);
-
            state = [... state];
     } catch (e) {
       rethrow;

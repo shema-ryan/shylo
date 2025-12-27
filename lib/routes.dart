@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shylo/models/investor.dart';
 import 'package:shylo/models/loan.dart';
 import 'package:shylo/models/usermodel.dart';
+import 'package:shylo/screens/deciderscreen.dart';
 import 'package:shylo/screens/investordetailscreen.dart';
 import './screens/screen.dart';
 import 'models/client.dart';
@@ -15,18 +16,18 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/',
       pageBuilder: (context, state) =>
-          MaterialPage(key: state.pageKey, child: const AuthenticationScreen()),
+          MaterialPage(key: state.pageKey, child: const DeciderScreen()),
     ),
     GoRoute(
       path: '/homescreen',
       pageBuilder: (context, state) {
-        final UserModel userModel =
-            (state.extra! as Map<String, dynamic>)['userModel'] as UserModel;
+        final UserAccount userAccount =
+            (state.extra! as Map<String, dynamic>)['userModel'] as UserAccount;
         final selectedPrevious =
             (state.extra! as Map<String, dynamic>)['selected'] as int?;
         return MaterialPage(
           key: state.pageKey,
-          child: HomeScreen(userModel: userModel, previous: selectedPrevious),
+          child: HomeScreen(userAccount: userAccount, previous: selectedPrevious),
         );
       },
     ),
@@ -36,7 +37,7 @@ final goRouter = GoRouter(
         final Investor investor = state.extra! as Investor;
         return MaterialPage(
           key: state.pageKey,
-          child: InvestorDetailScreen(investor: investor),
+          child: InvestorDetailScreen(id: investor.id!),
         );
       },
     ),

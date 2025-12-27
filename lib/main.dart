@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shylo/controllers/databasecontroller.dart';
-import 'package:shylo/controllers/localnotification.dart';
+import 'package:shylo/controllers/localnotificationcontroller.dart';
 import 'package:shylo/models/model.dart';
 import 'package:shylo/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await WindowsNotification.initializeNotification();
+  await LocalNotificationController.initializeNotification();
   DbController();
   runApp(ProviderScope(child: const MyApp()));
 }

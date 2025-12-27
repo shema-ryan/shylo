@@ -4,8 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:mongo_dart/mongo_dart.dart' show ObjectId;
 import 'package:shylo/controllers/investorcontroller.dart';
-import 'package:shylo/controllers/userauthenticationcontroller.dart';
+import 'package:shylo/controllers/useraccountcontroller.dart';
 import 'package:shylo/models/investor.dart';
 import 'package:shylo/models/moneyformat.dart';
 import 'package:shylo/routes.dart';
@@ -15,13 +16,13 @@ import 'package:shylo/widgets/tableheaderrow.dart';
 import 'package:shylo/widgets/tablerow.dart';
 
 class InvestorDetailScreen extends ConsumerWidget {
-  final Investor investor;
-  InvestorDetailScreen({super.key, required this.investor});
+  final ObjectId id;
+  InvestorDetailScreen({super.key, required this.id});
   final amountController = TextEditingController();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.read(userAuthenticationProvider);
-    ref.watch(investorProvider);
+    final user = ref.read(userAccountProvider);
+     final investor = ref.watch(investorProvider).firstWhere((investor)=> investor.id == id);
     return Scaffold(
       floatingActionButton: FloatingActionButton.small(
         backgroundColor: Theme.of(context).primaryColor,
@@ -74,9 +75,9 @@ class InvestorDetailScreen extends ConsumerWidget {
                   onPressed: () async {
                     if (amountController.value.text.isNotEmpty) {
                       try {
-                        if (investor.checkBalance(
-                          double.parse(amountController.text),
-                        ).isNegative) {
+                        if ((investor.totalIncome() -
+                                investor.calculatePayout()) <
+                            double.parse(amountController.text)) {
                           showErrorMessage(
                             message:
                                 'amount can\'t be greater than available balance',
@@ -105,7 +106,6 @@ class InvestorDetailScreen extends ConsumerWidget {
                         amountController.clear();
                         if (context.mounted) Navigator.of(context).pop();
                       } catch (e) {
-                        
                         //if (context.mounted) Navigator.of(context).pop();
                         showErrorMessage(message: e.toString());
                       }
@@ -127,8 +127,7 @@ class InvestorDetailScreen extends ConsumerWidget {
           icon: Icon(IconsaxPlusLinear.arrow_left),
           onPressed: () {
             goRouter.go(
-              '/homescreen',
-              extra: {'userModel': user, 'selectedIndex': 3},
+              '/',
             );
           },
         ),

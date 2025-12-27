@@ -22,6 +22,20 @@ class Loancontroller extends StateNotifier<List<Loan>> {
     }
   }
 
+  Future<void> selectBaseOnDate({
+    required DateTime firstDate,
+    required DateTime lastDate,
+  }) async {
+    final results = await DbController.database.db!
+        .collection('loanCollection') .find( {'obtainDate':{
+          '\$gte': firstDate.toIso8601String(),
+          '\$lte': lastDate.toIso8601String(),
+        }}).take(10).toList();
+
+
+        
+  }
+
   // ADD LOAN
   Future<void> registerLoan(Loan loan) async {
     try {
@@ -132,7 +146,8 @@ class Loancontroller extends StateNotifier<List<Loan>> {
   double amountTopay(Loan loan) {
     final days = loan.dueDate.difference(loan.obtainDate).inDays;
     return (loan.principleAmount +
-        (loan.principleAmount * loan.interestRate / 3000) * (days + 1)).roundToDouble();
+            (loan.principleAmount * loan.interestRate / 3000) * (days + 1))
+        .roundToDouble();
   }
 
   double outStandingbalance() {
