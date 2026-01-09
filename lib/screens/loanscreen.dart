@@ -86,7 +86,9 @@ class _LoanScreenState extends ConsumerState<LoanScreen>
     return Column(
       children: [
         const SizedBox(height: 5),
-        Row(children: [const Spacer(), LoanForm()]),
+        Row(children: [Text('Loan Screen' , style: TextTheme.of(context).titleMedium!.copyWith(
+          fontWeight: FontWeight.bold
+        ),), const Spacer(),LoanForm() , const SizedBox(width: 5,)]),
         const SizedBox(height: 5),
         TabBar(
           labelPadding: const EdgeInsets.symmetric(vertical: 10),

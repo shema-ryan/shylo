@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:shylo/controllers/clientcontroller.dart';
+import 'package:shylo/controllers/expensecontroller.dart';
 import 'package:shylo/controllers/investorcontroller.dart';
 import 'package:shylo/controllers/loancontroller.dart';
 import 'package:shylo/controllers/navigatorcontroller.dart';
 import 'package:shylo/controllers/useraccountcontroller.dart';
 import 'package:shylo/models/usermodel.dart';
-import 'package:shylo/routes.dart';
 import 'package:shylo/screens/customerscreen.dart';
+import 'package:shylo/screens/expensescreen.dart';
 import 'package:shylo/screens/investorscreen.dart';
 import 'package:shylo/screens/loanscreen.dart';
-import 'package:shylo/screens/reportscreen.dart';
+import 'package:shylo/screens/profitscreen.dart';
 import 'package:shylo/screens/userscreen.dart';
 import 'package:shylo/widgets/success.dart';
 import '../widgets/navigationview.dart';
@@ -39,6 +40,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         await ref.read(clientProvider.notifier).fetchAllClient();
         await ref.read(loanProvider.notifier).fetchAllLoans();
         await ref.read(investorProvider.notifier).fetchAllInvestor();
+        await ref.read(expenseProvider.notifier).fetchAllExpenses();
       } catch (e) {
         showErrorMessage(message: e.toString());
       }
@@ -53,9 +55,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       DashBoardScreen(),
       CustomerScreen(),
       LoanScreen(),
-      InvestorScreen(),
+      ExpenseScreen(),
+      ProfitScreen(),
       if (loggedUser!.userRoles.contains(UserRoles.administrator))
-        ReportScreen(),
+        InvestorScreen(),
+
       if (loggedUser.userRoles.contains(UserRoles.administrator)) UserScreen(),
     ];
     return Scaffold(
@@ -85,7 +89,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ref.read(navigatorProvider.notifier).navigateTo(0);
                         },
                         label: const Text('Sign Out'),
-                      ), 
+                      ),
                     ],
                   ),
                 ),

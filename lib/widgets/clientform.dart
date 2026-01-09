@@ -36,6 +36,7 @@ class _ClientFormState extends ConsumerState<ClientForm> {
   Widget build(BuildContext context) {
     final  listClient = ref.read(clientProvider);
     return ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(minimumSize: Size(200 , 45)),
       icon: const  Icon(IconsaxPlusLinear.add),
       onPressed: () {
         showDialog(

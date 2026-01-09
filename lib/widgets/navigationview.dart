@@ -22,13 +22,13 @@ class NavigationController extends ConsumerWidget {
     final loggedUser = ref.read(userAccountProvider);
     List<NavigationItem> list = [
       NavigationItem(id: 0, data: IconsaxPlusLinear.graph, name: 'Dashboard'),
-      NavigationItem(id: 1, data: IconsaxPlusLinear.user, name: 'Cutomers'),
+      NavigationItem(id: 1, data: IconsaxPlusLinear.user, name: 'Clients'),
       NavigationItem(id: 2, data: IconsaxPlusLinear.money_send, name: 'Loan'),
-      NavigationItem(id: 3, data: IconsaxPlusLinear.people, name: 'Investors'),
-      if (loggedUser!.userRoles.contains(UserRoles.administrator))
-        NavigationItem(id: 4, data: IconsaxPlusLinear.receipt_add, name: 'Expense'),
+        NavigationItem(id: 3, data: IconsaxPlusLinear.receipt_add, name: 'Expense'),
+        NavigationItem(id: 4, data: IconsaxPlusLinear.presention_chart, name: 'Earnigs'),
+         if (loggedUser!.userRoles.contains(UserRoles.administrator))   NavigationItem(id: 5, data: IconsaxPlusLinear.people, name: 'Investors'),
       if (loggedUser.userRoles.contains(UserRoles.administrator))
-        NavigationItem(id: 5, data: IconsaxPlusLinear.people, name: 'Accounts'),
+        NavigationItem(id: 6, data: IconsaxPlusLinear.people, name: 'Accounts'),
     ];
   
     return Column(

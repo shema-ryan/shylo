@@ -39,20 +39,25 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
         return Padding(
           padding: const EdgeInsets.all(5.0),
           child: Column(
-            spacing: 5,
+            crossAxisAlignment: CrossAxisAlignment.start,
+        
             children: [
-              SizedBox(height: constraints.maxHeight * 0.0048),
+            
+              Text('Clients Screen.' , style: TextTheme.of(context).titleMedium!.copyWith(fontWeight: FontWeight.bold),),
+              Text('Manage all clients in one place' , style: TextTheme.of(context).bodySmall,),
+                   SizedBox(height:constraints. maxHeight * 0.005,),
               Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   SizedBox(
-                    width: constraints.maxWidth * 0.4,
+                    width: constraints.maxWidth * 0.3,
                     child: TextField(
                         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                         onChanged: (value){
                           ref.read(searchText.notifier).update((state)=> state = value);
                         },
                       decoration: InputDecoration(
-                     
+                        constraints: BoxConstraints(maxHeight: 40),
                         filled: true,
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
@@ -65,23 +70,22 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                           color: Colors.grey,
                         ),
                         hintStyle: TextStyle(fontSize: 15),
-                        labelText: 'search using customer Id . . . . ',
+                        labelStyle: TextTheme.of(context).bodyMedium,
+                        labelText: 'search with Id . . . . ',
                       ),
                     ),
                   ),
-                  const Spacer(),
+                   const SizedBox(width: 10,),
                   ClientForm(),
                 ],
               ),
+              SizedBox(height:constraints. maxHeight * 0.005,),
               SizedBox(
-                height: constraints.maxHeight * 0.895,
+                height: constraints.maxHeight * 0.8,
                 child: clientList.isEmpty
                     ? const Center(child: Text('Client Not Available..'))
                     : Table(
-                        border: TableBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          top: BorderSide(color: Colors.black12),
-                         
+                        border: TableBorder(     
                           bottom: BorderSide(color: Colors.black12),
                           horizontalInside: BorderSide(color: Colors.black12),
                          

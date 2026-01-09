@@ -14,7 +14,7 @@ final filteredProvider =
       final searchText = ref.watch(searchProvider);
       final allClients = ref.watch(clientProvider);
            if (searchText == '' && date.lastDate != null) {
-            print('we are here');
+       
  
         return [
           ...date.allLoans.where(

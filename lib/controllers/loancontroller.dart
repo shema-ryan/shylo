@@ -1,4 +1,6 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:intl/intl.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import '../controllers/databasecontroller.dart';
 import '../models/loan.dart';
@@ -22,19 +24,6 @@ class Loancontroller extends StateNotifier<List<Loan>> {
     }
   }
 
-  Future<void> selectBaseOnDate({
-    required DateTime firstDate,
-    required DateTime lastDate,
-  }) async {
-    final results = await DbController.database.db!
-        .collection('loanCollection') .find( {'obtainDate':{
-          '\$gte': firstDate.toIso8601String(),
-          '\$lte': lastDate.toIso8601String(),
-        }}).take(10).toList();
-
-
-        
-  }
 
   // ADD LOAN
   Future<void> registerLoan(Loan loan) async {
@@ -162,6 +151,18 @@ class Loancontroller extends StateNotifier<List<Loan>> {
     }
     return amount;
   }
+
+  List<(String , double)> getLoansForMonth(){
+    List<(String , double)> months=[];
+    final groupedLoans = groupBy(state, (loan)=> DateFormat('YYYY-MM').format(loan.dueDate));
+    for(int i = 0 ; i < 6 ; i++){
+      final dateToformat = DateTime(DateTime.now().year , DateTime.now().month - i, 1);
+      final lookUpKey = DateFormat('YYYY-MM').format(dateToformat);
+      months.add((DateFormat('MMM').format(dateToformat),(groupedLoans[lookUpKey]?? []) .fold(0.0, (sum , next)=> sum += next.calculateInterest())));
+    }
+    return months;
+  }
+
 }
 
 final loanProvider = StateNotifierProvider<Loancontroller, List<Loan>>(

@@ -15,16 +15,17 @@ class InvestorScreen extends ConsumerStatefulWidget {
 }
 
 class _InvestorScreenState extends ConsumerState<InvestorScreen> {
+  late final Animation battery;
   @override
   void initState() {
     super.initState();
+
     ref.read(investorProvider.notifier).fetchAllInvestor();
   }
 
   @override
   Widget build(BuildContext context) {
-    final investorList = ref.watch(investorProvider);
-
+    final investorList = ref.watch(filteredInvestorProvider);
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
@@ -39,7 +40,9 @@ class _InvestorScreenState extends ConsumerState<InvestorScreen> {
                 SizedBox(
                   width: width * 0.3,
                   child: TextField(
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      ref.read(investorSearchProvider.notifier).state = value;
+                    },
                     decoration: InputDecoration(
                       constraints: BoxConstraints(maxHeight: 45),
                       filled: true,
@@ -74,25 +77,27 @@ class _InvestorScreenState extends ConsumerState<InvestorScreen> {
             SizedBox(
               height: height * 0.9,
               width: width,
-              child: GridView.builder(
-                itemCount: investorList.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 2.25,
-                ),
-                itemBuilder: (context, index) => GestureDetector(
-                  onTap: () {
-                    goRouter.push(
-                      '/investordetailscreen',
-                      extra: investorList[index],
-                    );
-                  },
-                  child: InvestorCard(
-                    investor: investorList[index],
-                    height: height,
-                  ),
-                ),
-              ),
+              child: investorList.isEmpty
+                  ? Center(child: const Text('No investor available...'))
+                  : GridView.builder(
+                      itemCount: investorList.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 2.25,
+                      ),
+                      itemBuilder: (context, index) => GestureDetector(
+                        onTap: () {
+                          goRouter.push(
+                            '/investordetailscreen',
+                            extra: investorList[index],
+                          );
+                        },
+                        child: InvestorCard(
+                          investor: investorList[index],
+                          height: height,
+                        ),
+                      ),
+                    ),
             ),
           ],
         );

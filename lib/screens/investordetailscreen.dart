@@ -6,7 +6,6 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:mongo_dart/mongo_dart.dart' show ObjectId;
 import 'package:shylo/controllers/investorcontroller.dart';
-import 'package:shylo/controllers/useraccountcontroller.dart';
 import 'package:shylo/models/investor.dart';
 import 'package:shylo/models/moneyformat.dart';
 import 'package:shylo/routes.dart';
@@ -21,7 +20,7 @@ class InvestorDetailScreen extends ConsumerWidget {
   final amountController = TextEditingController();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.read(userAccountProvider);
+  
      final investor = ref.watch(investorProvider).firstWhere((investor)=> investor.id == id);
     return Scaffold(
       floatingActionButton: FloatingActionButton.small(

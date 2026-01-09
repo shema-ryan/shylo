@@ -31,10 +31,15 @@ class DashBoardScreen extends ConsumerWidget {
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 5,
+        
           children: [
+            Text('DashBoard Screen' , style:TextTheme.of(context).titleMedium!.copyWith(
+              fontWeight: FontWeight.bold,
+            ),),
+             Text('view a summary of all Loans in one place.', style: TextTheme.of(context).bodySmall,),
+            SizedBox(height: height * 0.005,),
             SizedBox(
-              height: height * 0.3,
+              height: height * 0.2,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -69,17 +74,19 @@ class DashBoardScreen extends ConsumerWidget {
                 ],
               ),
             ),
+            SizedBox(height: height * 0.02,),
             AutoSizeText(
               'Recent Loans',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
+            SizedBox(height: height * 0.005,),
             SizedBox(
-              height: height * 0.65,
+              height: height * 0.68,
               child: Table(
                 border: TableBorder(
-                  horizontalInside: BorderSide(color: Colors.grey),
+                  horizontalInside: BorderSide(color: Colors.black12),
 
-                  bottom: BorderSide(color: Colors.grey),
+                  bottom: BorderSide(color: Colors.black12),
                 ),
                 children: [
                   TableRow(

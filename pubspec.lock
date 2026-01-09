@@ -130,7 +130,7 @@ packages:
     source: hosted
     version: "1.1.2"
   collection:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: collection
       sha256: "2f5709ae4d3d59dd8f7cd309b4e023046b57d8a6c82130785d2b0e5868084e76"
@@ -209,6 +209,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.4"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      sha256: "567c64b3cb4cf82397aac55f4f0cbd3ca20d77c6c03bedbc4ceaddc08904aef7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.7"
   fake_async:
     dependency: transitive
     description:
@@ -305,14 +313,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
-  fluent_ui:
+  fl_chart:
     dependency: "direct main"
     description:
-      name: fluent_ui
-      sha256: "64223237a1d873b426d578d4d8b2703b8f7d9731608a5beb7b9745194568d484"
+      name: fl_chart
+      sha256: "7ca9a40f4eb85949190e54087be8b4d6ac09dc4c54238d782a34cf1f7c011de9"
       url: "https://pub.dev"
     source: hosted
-    version: "4.13.0"
+    version: "1.1.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -358,11 +366,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.3"
-  flutter_localizations:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   flutter_riverpod:
     dependency: "direct main"
     description:
@@ -549,14 +552,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.11.1"
-  math_expressions:
-    dependency: transitive
-    description:
-      name: math_expressions
-      sha256: "218dc65bed4726562bb31c53d8daa3cc824664b26fb72d77bc592757edf74ba0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.7.0"
   meta:
     dependency: transitive
     description:
@@ -717,14 +712,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.3"
-  recase:
-    dependency: transitive
-    description:
-      name: recase
-      sha256: e4eb4ec2dcdee52dcf99cb4ceabaffc631d7424ee55e56f280bc039737f89213
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.0"
   riverpod:
     dependency: transitive
     description:
@@ -749,14 +736,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.3"
-  scroll_pos:
-    dependency: transitive
-    description:
-      name: scroll_pos
-      sha256: cebf602b2dd939de6832bb902ffefb574608d1b84f420b82b381a4007d3c1e1b
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.0"
   shelf:
     dependency: transitive
     description:

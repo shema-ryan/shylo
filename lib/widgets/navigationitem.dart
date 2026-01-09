@@ -16,15 +16,15 @@ class NavigatorItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor =  Theme.of(context).primaryColor;
     return Container(
       margin: EdgeInsets.symmetric(
         vertical: height * 0.005,
         horizontal: width * 0.002,
       ),
       padding: EdgeInsets.symmetric(vertical: height * 0.01),
-  
       decoration: BoxDecoration(
-        color: selectedIndex == navigationItem.id ? Theme.of(context).primaryColor.withAlpha(50) : Colors.transparent,
+        color: selectedIndex == navigationItem.id ? primaryColor.withAlpha(50) : Colors.transparent,
         borderRadius: BorderRadius.circular(2),
       ),
       child: Row(
@@ -40,9 +40,9 @@ class NavigatorItem extends StatelessWidget {
                 )
               : SizedBox.shrink(),
           SizedBox(width: width * 0.005),
-          Icon(navigationItem.data, size: 17),
+          Icon(navigationItem.data, size:selectedIndex == navigationItem.id ?  20: 15 , color: selectedIndex == navigationItem.id ? primaryColor : Colors.black87 ,),
           SizedBox(width: width * 0.005),
-          Text(navigationItem.name , style: TextStyle(fontSize:14)),
+          Text(navigationItem.name , style: TextStyle(fontSize:14 , color:selectedIndex == navigationItem.id ? primaryColor : Colors.black87 , )),
         ],
       ),
     );

@@ -33,7 +33,7 @@ class _LoanFormState extends ConsumerState<LoanForm> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final clientList = ref.read(clientProvider);
-    return OutlinedButton.icon(
+    return ElevatedButton.icon(
       icon: const Icon(Icons.add),
       onPressed: () {
         showDialog(

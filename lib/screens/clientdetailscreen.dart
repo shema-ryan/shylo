@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shylo/controllers/clientcontroller.dart';
-import 'package:shylo/controllers/useraccountcontroller.dart';
 import 'package:shylo/widgets/clienteditform.dart';
 
 import 'loandetailscreen.dart';

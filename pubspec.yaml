@@ -43,12 +43,13 @@ dependencies:
   file_selector_windows: ^0.9.3+4
   file_selector: ^1.0.4
   file_selector_platform_interface: ^2.6.2
-  fluent_ui: ^4.13.0
   intl: ^0.20.2
   flutter_local_notifications: ^19.5.0
   pdf: ^3.11.3
   msix: ^3.16.12
   local_notifier: ^0.1.6
+  fl_chart: ^1.1.1
+  collection: ^1.19.1
   
 
 dev_dependencies:

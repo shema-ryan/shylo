@@ -34,7 +34,7 @@ class Loan {
     : id = loanJson['_id'],
       collateral = loanJson['collateral'],
       remarks = loanJson['remarks'],
-      loanId = loanJson['loanId'] ,
+      loanId = loanJson['loanId'],
       obtainDate = DateTime.parse(loanJson['obtainDate']),
       dueDate = DateTime.parse(loanJson['dueDate']),
       interestRate = loanJson['interestRate'],
@@ -70,10 +70,13 @@ class Loan {
     return amount;
   }
 
-  // calculate balance .
-  double calculateTotalAmount() {
+  double calculateInterest() {
     final days = dueDate.difference(obtainDate).inDays;
-    return (principleAmount + (principleAmount * (days + 1) * interestRate / 3000)).roundToDouble();
+    return (principleAmount * (days + 1) * interestRate / 3000).roundToDouble();
   }
 
+  // calculate balance .
+  double calculateTotalAmount() {
+    return (principleAmount + calculateInterest());
+  }
 }

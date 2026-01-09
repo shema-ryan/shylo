@@ -56,9 +56,9 @@ class Investorcontroller extends StateNotifier<List<Investor>> {
     }
   }
 
-  double calculateInvestement(){
-    double amount = 0 ;
-    for (var investor in state){
+  double calculateInvestement() {
+    double amount = 0;
+    for (var investor in state) {
       amount += investor.amount;
     }
     return amount;
@@ -72,11 +72,11 @@ class Investorcontroller extends StateNotifier<List<Investor>> {
             where.eq('_id', investor.id),
             modify.set('paymentTracker', investor.paymentTracker),
           );
-         final index =  state.indexWhere((element)=> element.id == investor.id);
-         print('we have got  this index.');
-          state.removeWhere((element)=> element.id == investor.id);
-          state.insert(index, investor);
-           state = [... state];
+      final index = state.indexWhere((element) => element.id == investor.id);
+      print('we have got  this index.');
+      state.removeWhere((element) => element.id == investor.id);
+      state.insert(index, investor);
+      state = [...state];
     } catch (e) {
       rethrow;
     }
@@ -87,3 +87,15 @@ final investorProvider =
     StateNotifierProvider<Investorcontroller, List<Investor>>(
       (ref) => Investorcontroller(),
     );
+// Investor Provider ---> 
+final investorSearchProvider = StateProvider<String>((ref) => '');
+// Filtered Provider --->
+final filteredInvestorProvider = StateProvider<List<Investor>>((ref) {
+  final searchProvider = ref.watch(investorSearchProvider);
+  final allInvestor = ref.watch(investorProvider);
+  return searchProvider.isNotEmpty
+      ? allInvestor
+            .where((element) => element.name.contains(searchProvider))
+            .toList()
+      : allInvestor;
+});
